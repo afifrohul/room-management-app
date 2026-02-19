@@ -8,6 +8,7 @@ import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { FaPlusCircle } from 'react-icons/fa';
 import { format } from 'date-fns';
+import { Permission } from '@/types/permission';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,12 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/permissions',
     },
 ];
-
-type Permission = {
-    id: number;
-    name: string;
-    created_at: string;
-};
 
 interface IndexProps {
     permissions: Permission[];
@@ -46,7 +41,7 @@ export default function Index({ permissions }: IndexProps) {
                     <EditButton url={`/permissions/${row.original.id}/edit`} />
                     <DeleteButton
                         url={`/permissions/${row.original.id}`}
-                        confirmMessage="Are you sure to delete this permissions?"
+                        confirmMessage="Are you sure to delete this permission?"
                     />
                 </div>
             ),

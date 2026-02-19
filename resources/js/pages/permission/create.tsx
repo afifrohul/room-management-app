@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 import { PermissionForm } from './partials/formPermission';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Habit - Create', href: '/habits/create' },
+    { title: 'Permission - Create', href: '/permissions/create' },
 ];
 
 export default function Create() {

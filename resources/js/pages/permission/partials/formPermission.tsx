@@ -6,7 +6,7 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface PermissionFormProps {
@@ -23,6 +23,8 @@ export function PermissionForm({
     submitUrl,
     method = 'post',
 }: PermissionFormProps) {
+    const { errors } = usePage().props;
+
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [form, setForm] = useState({
@@ -48,7 +50,16 @@ export function PermissionForm({
             <div>
                 <FieldGroup>
                     <Field>
-                        <FieldLabel htmlFor="name">Name</FieldLabel>
+                        <FieldLabel
+                            htmlFor="name"
+                            className={`${errors.name ? 'text-destructive' : ''}`}
+                        >
+                            Name
+                        </FieldLabel>
+                        <FieldDescription className="text-xs">
+                            Choose a unique permission name. Using
+                            "resource.action" format. Example: post.create
+                        </FieldDescription>
                         <Input
                             id="name"
                             type="text"
@@ -56,12 +67,13 @@ export function PermissionForm({
                             value={form.name}
                             onChange={handleChange}
                             placeholder="Enter permission name"
+                            className={`${errors.name ? 'border-destructive' : ''}`}
                         />
-
-                        <FieldDescription>
-                            Choose a unique permission name. Using
-                            resource.action format. Example: post.create
-                        </FieldDescription>
+                        {errors.name && (
+                            <FieldDescription className="text-xs text-destructive">
+                                {errors.name}
+                            </FieldDescription>
+                        )}
                     </Field>
                 </FieldGroup>
             </div>

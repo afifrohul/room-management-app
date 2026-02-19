@@ -59,7 +59,7 @@ class PermissionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // 
     }
 
     /**
@@ -67,7 +67,13 @@ class PermissionController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            $permission = Permission::findOrFail($id);
+            return Inertia::render('permission/edit', compact('permission'));
+        } catch (\Exception $e) {
+            Log::error('Error loading edit form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load edit form.');
+        }
     }
 
     /**
@@ -75,7 +81,18 @@ class PermissionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:permissions,name',
+        ]);
+        
+        try {
+            $permission = Permission::findOrFail($id);
+            $permission->update($request->only('name'));
+            return redirect()->route('permissions.index')->with('success', 'Permission updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error updating permission: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update permission.');
+        }
     }
 
     /**
@@ -83,6 +100,13 @@ class PermissionController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $permission = Permission::findOrFail($id);
+            $permission->delete();
+            return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error deleting permission: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete permission.');
+        }
     }
 }
