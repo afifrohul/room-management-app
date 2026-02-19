@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, Logs } from 'lucide-react';
+import { LayoutGrid, Logs, Users, Key, LockKeyhole } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -16,11 +16,29 @@ import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+const dashboardItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+];
+
+const masterDataItems: NavItem[] = [
+    {
+        title: 'Permission',
+        href: '/permissions',
+        icon: Key,
+    },
+    {
+        title: 'Role',
+        href: '/roles',
+        icon: LockKeyhole,
+    },
+    {
+        title: 'User',
+        href: '/users',
+        icon: Users,
     },
 ];
 
@@ -48,7 +66,8 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain header={'Dashboard'} items={mainNavItems} />
+                <NavMain header={'Dashboard'} items={dashboardItems} />
+                <NavMain header={'Master Data'} items={masterDataItems} />
             </SidebarContent>
 
             <SidebarFooter>
