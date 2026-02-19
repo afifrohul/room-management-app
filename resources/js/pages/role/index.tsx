@@ -66,10 +66,10 @@ export default function Index({ roles }: IndexProps) {
                             createButton={
                                 <Button
                                     variant="outline"
-                                    onClick={() => router.get('/habits/create')}
+                                    onClick={() => router.get('/roles/create')}
                                 >
                                     <FaPlusCircle className="mr-2" /> Create New
-                                    Habit
+                                    Role
                                 </Button>
                             }
                         />

@@ -11,27 +11,42 @@ import { format } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Permission',
-        href: '/permissions',
+        title: 'User',
+        href: '/users',
     },
 ];
 
-type Permission = {
+type User = {
     id: number;
     name: string;
+    email: string;
     created_at: string;
+    roles: {
+        id: number;
+        name: string;
+    }[];
 };
 
 interface IndexProps {
-    permissions: Permission[];
+    users: User[];
 }
 
-export default function Index({ permissions }: IndexProps) {
-    const columns: ColumnDef<Permission>[] = [
+export default function Index({ users }: IndexProps) {
+    const columns: ColumnDef<User>[] = [
         {
             accessorKey: 'name',
-            header: 'Permission Name',
+            header: 'User Name',
             cell: (info) => info.getValue(),
+        },
+        {
+            accessorKey: 'email',
+            header: 'User Email',
+            cell: (info) => info.getValue(),
+        },
+        {
+            accessorKey: 'roles.name',
+            header: 'User Role',
+            cell: ({ row }) => row.original.roles[0].name,
         },
         {
             accessorKey: 'created_at',
@@ -43,10 +58,10 @@ export default function Index({ permissions }: IndexProps) {
             header: 'Actions',
             cell: ({ row }) => (
                 <div className="flex justify-start gap-2">
-                    <EditButton url={`/permissions/${row.original.id}/edit`} />
+                    <EditButton url={`/users/${row.original.id}/edit`} />
                     <DeleteButton
-                        url={`/permissions/${row.original.id}`}
-                        confirmMessage="Are you sure to delete this permissions?"
+                        url={`/users/${row.original.id}`}
+                        confirmMessage="Are you sure to delete this user?"
                     />
                 </div>
             ),
@@ -55,23 +70,21 @@ export default function Index({ permissions }: IndexProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Permission" />
+            <Head title="User" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="rounded-xl border p-4">
                     <div className="mx-auto flex w-full flex-col gap-4">
-                        <DataTable<Permission>
+                        <DataTable<User>
                             showIndexColumn
                             columns={columns}
-                            data={permissions}
+                            data={users}
                             createButton={
                                 <Button
                                     variant="outline"
-                                    onClick={() =>
-                                        router.get('/permissions/create')
-                                    }
+                                    onClick={() => router.get('/habits/create')}
                                 >
                                     <FaPlusCircle className="mr-2" /> Create New
-                                    Permission
+                                    User
                                 </Button>
                             }
                         />
