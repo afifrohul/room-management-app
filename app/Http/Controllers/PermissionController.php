@@ -15,7 +15,7 @@ class PermissionController extends Controller
     public function index()
     {
         try {
-            $permissions = Permission::select('id', 'name', 'created_at')->get();
+            $permissions = Permission::select('id', 'name', 'created_at')->orderBy('created_at', 'desc')->orderBy('name', 'asc')->get();
             return Inertia::render('permission/index', compact('permissions'));
         } catch (\Exception $e) {
             Log::error('Error loading permissions: ' . $e->getMessage());
@@ -28,7 +28,12 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
+        try {
+            return Inertia::render('permission/create');
+        } catch (\Exception $e) {
+            Log::error('Error loading create form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load create form.');
+        }
     }
 
     /**
@@ -36,7 +41,17 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:permissions,name',
+        ]);
+        
+        try {
+            Permission::create($request->only('name'));
+            return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error creating permission: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to create permission.');
+        }
     }
 
     /**
