@@ -8,6 +8,7 @@ import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { FaPlusCircle } from 'react-icons/fa';
 import { format } from 'date-fns';
+import { Role } from '@/types/role';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,12 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/roles',
     },
 ];
-
-type Role = {
-    id: number;
-    name: string;
-    created_at: string;
-};
 
 interface IndexProps {
     roles: Role[];
@@ -32,6 +27,20 @@ export default function Index({ roles }: IndexProps) {
             accessorKey: 'name',
             header: 'Role Name',
             cell: (info) => info.getValue(),
+        },
+        {
+            accessorKey: 'permissions',
+            header: 'Permissions',
+            cell: ({ row }) => (
+                <div>
+                    {row.original.name === 'Superadmin'
+                        ? 'all permissions'
+                        : null}
+                    {row.original.permissions?.map((item, index) => (
+                        <p key={index}>{item.name}</p>
+                    ))}
+                </div>
+            ),
         },
         {
             accessorKey: 'created_at',

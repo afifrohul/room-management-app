@@ -15,7 +15,7 @@ class RoleController extends Controller
     public function index()
     {
         try {
-            $roles = Role::select('id', 'name', 'created_at')->get();
+            $roles = Role::with(['permissions:id,name'])->select('id', 'name', 'created_at')->get();
             return Inertia::render('role/index', compact('roles'));
         } catch (\Exception $e) {
             Log::error('Error loading roles: ' . $e->getMessage());
