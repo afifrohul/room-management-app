@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
             RoomSeeder::class,
         ]);
 
+        // \App\Models\User::factory(10)->create()->each(function ($user) {
+        //     $user->assignRole('UKM/ORMAWA');
+        // });
     }
 }

@@ -46,7 +46,7 @@ export default function Index({ users }: IndexProps) {
         {
             accessorKey: 'roles.name',
             header: 'User Role',
-            cell: ({ row }) => row.original.roles[0].name,
+            cell: ({ row }) => row.original.roles[0]?.name,
         },
         {
             accessorKey: 'created_at',
@@ -81,7 +81,7 @@ export default function Index({ users }: IndexProps) {
                             createButton={
                                 <Button
                                     variant="outline"
-                                    onClick={() => router.get('/habits/create')}
+                                    onClick={() => router.get('/users/create')}
                                 >
                                     <FaPlusCircle className="mr-2" /> Create New
                                     User

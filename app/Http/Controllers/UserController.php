@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use App\Models\User;
 
@@ -29,7 +30,12 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        try {
+            return Inertia::render('user/create');
+        } catch (\Exception $e) {
+            Log::error('Error loading create form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load create form.');
+        }
     }
 
     /**
@@ -37,7 +43,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|',
+            'password' => 'required|min:8',
+        ]);
+        
+        try {
+
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->email_verified_at = now();
+            $user->save();
+
+            return redirect()->route('users.index')->with('success', 'User created successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error creating user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to create user.');
+        }
     }
 
     /**
@@ -53,7 +78,13 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            return Inertia::render('user/edit', compact('user'));
+        } catch (\Exception $e) {
+            Log::error('Error loading edit form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load edit form.');
+        }
     }
 
     /**
@@ -61,7 +92,28 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|',
+            'password' => 'nullable|min:8',
+        ]);
+        
+        try {
+            $user = User::findOrFail($id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            
+            if ($request->password != "") {
+                $user->password = Hash::make($request->password);
+            }
+
+            $user->save();
+
+            return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error updating user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update user.');
+        }
     }
 
     /**
@@ -69,6 +121,13 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error deleting user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete user.');
+        }
     }
 }
