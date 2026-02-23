@@ -70,8 +70,12 @@ export default function Dashboard({ users }: DashboardProps) {
             header: 'Actions',
             cell: ({ row }) => (
                 <div className="flex justify-start gap-2">
-                    <p className='border rounded px-1 py-0.5 bg-accent'>Edit Button Here</p>
-                    <p className='border rounded px-1 py-0.5 bg-accent'>Delete Button Here</p>
+                    <p className="rounded border bg-accent px-1 py-0.5">
+                        Edit Button Here
+                    </p>
+                    <p className="rounded border bg-accent px-1 py-0.5">
+                        Delete Button Here
+                    </p>
                 </div>
             ),
         },
@@ -109,13 +113,6 @@ export default function Dashboard({ users }: DashboardProps) {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="mx-auto flex w-full flex-col gap-4 rounded-lg border p-4">
-                    <DataTable<User>
-                        showIndexColumn
-                        columns={columns}
-                        data={users}
-                    />
                 </div>
             </div>
         </AppLayout>
