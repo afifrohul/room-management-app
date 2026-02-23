@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, Logs, Users, Key, LockKeyhole } from 'lucide-react';
+import { LayoutGrid, Logs, Users, Key, LockKeyhole, UserCog } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -33,7 +33,7 @@ const masterDataItems: NavItem[] = [
     {
         title: 'Role',
         href: '/roles',
-        icon: LockKeyhole,
+        icon: UserCog,
     },
     {
         title: 'User',
