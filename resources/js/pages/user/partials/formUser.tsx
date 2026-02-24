@@ -6,25 +6,37 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Role } from '@/types/role';
 import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
-interface RoleFormProps {
+interface UserFormProps {
     initialData?: {
         id: number;
         name: string;
         email: string;
         password: string;
+        roles: Role;
     };
     submitUrl: string;
     method?: 'post' | 'put';
+    roles: Role[];
 }
 
 export function UserForm({
     initialData,
     submitUrl,
     method = 'post',
-}: RoleFormProps) {
+    roles,
+}: UserFormProps) {
     const { errors } = usePage().props;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +45,7 @@ export function UserForm({
         name: initialData?.name || '',
         email: initialData?.email || '',
         password: '',
+        role: initialData?.roles?.name || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,8 +61,6 @@ export function UserForm({
             onError: () => setIsSubmitting(false),
         });
     };
-
-    console.log(form);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -120,6 +131,36 @@ export function UserForm({
                                 {errors.password}
                             </FieldDescription>
                         )}
+                    </Field>
+                    <Field>
+                        <FieldLabel
+                            htmlFor="role"
+                            className={`${errors.role ? 'text-destructive' : ''}`}
+                        >
+                            Role
+                        </FieldLabel>
+                        <Select
+                            value={form.role}
+                            onValueChange={(value) =>
+                                setForm({ ...form, role: value })
+                            }
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {roles?.map((role) => (
+                                        <SelectItem
+                                            key={role.id}
+                                            value={role.name}
+                                        >
+                                            {role.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </Field>
                 </FieldGroup>
             </div>

@@ -8,6 +8,7 @@ import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { FaPlusCircle } from 'react-icons/fa';
 import { format } from 'date-fns';
+import { Role } from '@/types/role';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

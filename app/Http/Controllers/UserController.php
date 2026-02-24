@@ -7,6 +7,7 @@ use Illuminate\Http\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use App\Models\User;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -31,7 +32,8 @@ class UserController extends Controller
     public function create()
     {
         try {
-            return Inertia::render('user/create');
+            $roles = Role::select('id', 'name')->get();
+            return Inertia::render('user/create', compact('roles'));
         } catch (\Exception $e) {
             Log::error('Error loading create form: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load create form.');
@@ -47,6 +49,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|',
             'password' => 'required|min:8',
+            'role' => 'required'
         ]);
         
         try {
@@ -57,6 +60,8 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
             $user->email_verified_at = now();
             $user->save();
+
+            $user->assignRole($request->role);
 
             return redirect()->route('users.index')->with('success', 'User created successfully.');
         } catch (\Exception $e) {
@@ -79,8 +84,9 @@ class UserController extends Controller
     public function edit(string $id)
     {
         try {
+            $roles = Role::select('id', 'name')->get();
             $user = User::findOrFail($id);
-            return Inertia::render('user/edit', compact('user'));
+            return Inertia::render('user/edit', compact('user', 'roles'));
         } catch (\Exception $e) {
             Log::error('Error loading edit form: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load edit form.');
