@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use App\Models\User;
@@ -85,7 +85,7 @@ class UserController extends Controller
     {
         try {
             $roles = Role::select('id', 'name')->get();
-            $user = User::findOrFail($id);
+            $user = User::with('roles:id,name')->findOrFail($id);
             return Inertia::render('user/edit', compact('user', 'roles'));
         } catch (\Exception $e) {
             Log::error('Error loading edit form: ' . $e->getMessage());
@@ -102,6 +102,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|',
             'password' => 'nullable|min:8',
+            'role' => 'required'
         ]);
         
         try {
@@ -114,6 +115,8 @@ class UserController extends Controller
             }
 
             $user->save();
+
+            $user->syncRoles($request->role);
 
             return redirect()->route('users.index')->with('success', 'User updated successfully.');
         } catch (\Exception $e) {

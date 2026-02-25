@@ -24,7 +24,7 @@ interface UserFormProps {
         name: string;
         email: string;
         password: string;
-        roles: Role;
+        roles: Role[];
     };
     submitUrl: string;
     method?: 'post' | 'put';
@@ -45,7 +45,7 @@ export function UserForm({
         name: initialData?.name || '',
         email: initialData?.email || '',
         password: '',
-        role: initialData?.roles?.name || '',
+        role: initialData?.roles[0]?.name || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

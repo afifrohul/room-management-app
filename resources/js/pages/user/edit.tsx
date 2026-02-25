@@ -4,6 +4,7 @@ import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { UserForm } from './partials/formUser';
 import { User } from '@/types/user';
+import { Role } from '@/types/role';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'User - Edit', href: '/users/edit' },
@@ -11,9 +12,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface EditProps {
     user: User;
+    roles: Role[];
 }
 
-export default function Edit({ user }: EditProps) {
+export default function Edit({ user, roles }: EditProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit User" />
@@ -25,6 +27,7 @@ export default function Edit({ user }: EditProps) {
                         submitUrl={`/users/${user.id}`}
                         method="put"
                         initialData={user}
+                        roles={roles}
                     />
                 </div>
             </div>
