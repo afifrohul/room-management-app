@@ -11,9 +11,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface EditProps {
     role: Role;
+    permissions: [];
 }
 
-export default function Edit({ role }: EditProps) {
+export default function Edit({ role, permissions }: EditProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Role" />
@@ -25,6 +26,7 @@ export default function Edit({ role }: EditProps) {
                         submitUrl={`/roles/${role.id}`}
                         method="put"
                         initialData={role}
+                        permissions={permissions}
                     />
                 </div>
             </div>

@@ -8,7 +8,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Role - Create', href: '/roles/create' },
 ];
 
-export default function Create() {
+interface CreateProps {
+    permissions: [];
+}
+
+export default function Create({ permissions }: CreateProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Role" />
@@ -16,7 +20,7 @@ export default function Create() {
                 <div className="rounded-md border p-4">
                     <h1 className="mb-4 text-xl font-bold">Create Role</h1>
                     <Separator className="my-4" />
-                    <RoleForm submitUrl="/roles" method="post" />
+                    <RoleForm submitUrl="/roles" method="post" permissions={permissions} />
                 </div>
             </div>
         </AppLayout>

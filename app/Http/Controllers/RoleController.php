@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use App\Models\Role;
+use App\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -16,6 +18,16 @@ class RoleController extends Controller
     {
         try {
             $roles = Role::with(['permissions:id,name'])->select('id', 'name', 'created_at')->get();
+
+            $roles = $roles->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'created_at' => $role->created_at,
+                    'permissions' => $role->permissions?->pluck('name')->toArray()
+                ];
+            });
+
             return Inertia::render('role/index', compact('roles'));
         } catch (\Exception $e) {
             Log::error('Error loading roles: ' . $e->getMessage());
@@ -29,7 +41,8 @@ class RoleController extends Controller
     public function create()
     {
         try {
-            return Inertia::render('role/create');
+            $permissions = Permission::select('id', 'name as label', 'name as value')->get();
+            return Inertia::render('role/create', compact('permissions'));
         } catch (\Exception $e) {
             Log::error('Error loading create form: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load create form.');
@@ -42,11 +55,14 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:roles,name',
+            'name' => ['required', Rule::unique('roles')->whereNull('deleted_at')],
+            'permissions' => 'nullable'
         ]);
         
         try {
-            Role::create($request->only('name'));
+            $role = Role::create($request->only('name'));
+            $role->givePermissionTo($request->permissions);
+
             return redirect()->route('roles.index')->with('success', 'Role created successfully.');
         } catch (\Exception $e) {
             Log::error('Error creating role: ' . $e->getMessage());
@@ -68,8 +84,16 @@ class RoleController extends Controller
     public function edit(string $id)
     {
         try {
-            $role = Role::findOrFail($id);
-            return Inertia::render('role/edit', compact('role'));
+            $permissions = Permission::select('id', 'name as label', 'name as value')->get();
+            $role = Role::with('permissions:id,name')->findOrFail($id);
+
+            $role = [
+                'id' => $role->id,
+                'name' => $role->name,
+                'permissions' => $role->permissions->pluck('name')->toArray()
+            ];
+
+            return Inertia::render('role/edit', compact('role', 'permissions'));
         } catch (\Exception $e) {
             Log::error('Error loading edit form: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load edit form.');
@@ -82,12 +106,15 @@ class RoleController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => 'required|unique:roles,name',
+            'name' => ['required', Rule::unique('roles')->whereNull('deleted_at')->ignore($id)],
+            'permissions' => 'nullable'
         ]);
         
         try {
             $role = Role::findOrFail($id);
             $role->update($request->only('name'));
+            $role->syncPermissions($request->permissions);
+
             return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
         } catch (\Exception $e) {
             Log::error('Error updating role: ' . $e->getMessage());

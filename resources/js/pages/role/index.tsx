@@ -22,6 +22,9 @@ interface IndexProps {
 }
 
 export default function Index({ roles }: IndexProps) {
+
+    console.log(roles)
+
     const columns: ColumnDef<Role>[] = [
         {
             accessorKey: 'name',
@@ -36,8 +39,8 @@ export default function Index({ roles }: IndexProps) {
                     {row.original.name === 'Superadmin'
                         ? 'all permissions'
                         : null}
-                    {row.original.permissions?.map((item, index) => (
-                        <p key={index}>{item.name}</p>
+                    {row.original.permissions?.map((item) => (
+                        <p key={item}>{item}</p>
                     ))}
                 </div>
             ),

@@ -1,3 +1,4 @@
+import { MultiSelect } from '@/components/multi-select';
 import { Button } from '@/components/ui/button';
 import {
     Field,
@@ -13,22 +14,28 @@ interface RoleFormProps {
     initialData?: {
         id: number;
         name: string;
+        permissions: string[];
     };
     submitUrl: string;
     method?: 'post' | 'put';
+    permissions: [];
 }
 
 export function RoleForm({
     initialData,
     submitUrl,
     method = 'post',
+    permissions,
 }: RoleFormProps) {
+    console.log(initialData);
+
     const { errors } = usePage().props;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [form, setForm] = useState({
         name: initialData?.name || '',
+        permissions: initialData?.permissions || ([] as string[]),
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +78,28 @@ export function RoleForm({
                         {errors.name && (
                             <FieldDescription className="text-xs text-destructive">
                                 {errors.name}
+                            </FieldDescription>
+                        )}
+                    </Field>
+                    <Field>
+                        <FieldLabel
+                            htmlFor="permission"
+                            className={`${errors.permissions ? 'text-destructive' : ''}`}
+                        >
+                            Permission
+                        </FieldLabel>
+                        <MultiSelect
+                            options={permissions}
+                            onValueChange={(value) =>
+                                setForm({ ...form, permissions: value })
+                            }
+                            defaultValue={form.permissions}
+                            placeholder="Select permissions"
+                            maxCount={6}
+                        />
+                        {errors.permissions && (
+                            <FieldDescription className="text-xs text-destructive">
+                                {errors.permissions}
                             </FieldDescription>
                         )}
                     </Field>
