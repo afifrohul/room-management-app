@@ -17,7 +17,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::with('roles:id,name')->select('id', 'name', 'email', 'created_at')->get();
+            $users = User::with('roles:id,name')->select('id', 'name', 'email', 'created_at', 'updated_at')->get();
             
             return Inertia::render('user/index', compact('users'));
         } catch (\Exception $e) {

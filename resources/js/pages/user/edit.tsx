@@ -3,8 +3,8 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { UserForm } from './partials/formUser';
-import { User } from '@/types/user';
-import { Role } from '@/types/role';
+import { User } from '@/types/data/user';
+import { Role } from '@/types/data/role';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'User - Edit', href: '/users/edit' },

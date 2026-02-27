@@ -6,7 +6,7 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Role } from '@/types/role';
+import { Role } from '@/types/data/role';
 import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import {

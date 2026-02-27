@@ -17,13 +17,14 @@ class RoleController extends Controller
     public function index()
     {
         try {
-            $roles = Role::with(['permissions:id,name'])->select('id', 'name', 'created_at')->get();
+            $roles = Role::with(['permissions:id,name'])->select('id', 'name', 'created_at', 'updated_at')->get();
 
             $roles = $roles->map(function ($role) {
                 return [
                     'id' => $role->id,
                     'name' => $role->name,
                     'created_at' => $role->created_at,
+                    'updated_at' => $role->updated_at,
                     'permissions' => $role->permissions?->pluck('name')->toArray()
                 ];
             });

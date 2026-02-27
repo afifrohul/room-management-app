@@ -8,7 +8,7 @@ import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { FaPlusCircle } from 'react-icons/fa';
 import { format } from 'date-fns';
-import { Role } from '@/types/role';
+import { Role } from '@/types/data/role';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,9 +22,6 @@ interface IndexProps {
 }
 
 export default function Index({ roles }: IndexProps) {
-
-    console.log(roles)
-
     const columns: ColumnDef<Role>[] = [
         {
             accessorKey: 'name',
@@ -47,8 +44,15 @@ export default function Index({ roles }: IndexProps) {
         },
         {
             accessorKey: 'created_at',
-            header: 'Created At',
-            cell: (info) => format(info.getValue() as Date, 'dd MMMM yyyy'),
+            header: 'Created Date',
+            cell: (info) =>
+                format(info.getValue() as Date, 'dd MMMM yyyy - HH:mm:ss'),
+        },
+        {
+            accessorKey: 'updated_at',
+            header: 'Last Updated',
+            cell: (info) =>
+                format(info.getValue() as Date, 'dd MMMM yyyy - HH:mm:ss'),
         },
         {
             id: 'actions',

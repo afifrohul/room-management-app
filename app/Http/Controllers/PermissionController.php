@@ -15,7 +15,7 @@ class PermissionController extends Controller
     public function index()
     {
         try {
-            $permissions = Permission::select('id', 'name', 'created_at')->orderBy('created_at', 'desc')->orderBy('name', 'asc')->get();
+            $permissions = Permission::select('id', 'name', 'created_at', 'updated_at')->orderBy('created_at', 'desc')->orderBy('name', 'asc')->get();
             return Inertia::render('permission/index', compact('permissions'));
         } catch (\Exception $e) {
             Log::error('Error loading permissions: ' . $e->getMessage());

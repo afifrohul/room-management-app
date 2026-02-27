@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { RoomForm } from './partials/formRoom';
-import { Room } from '@/types/room';
+import { Room } from '@/types/data/room';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Room - Edit', href: '/room/edit' },

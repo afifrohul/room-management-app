@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { PermissionForm } from './partials/formPermission';
-import { Permission } from '@/types/permission';
+import { Permission } from '@/types/data/permission';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Permission - Edit', href: '/permissions/edit' },
