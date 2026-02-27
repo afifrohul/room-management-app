@@ -113,6 +113,13 @@ class RoomController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $room = Room::findOrFail($id);
+            $room->delete();
+            return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error deleting room: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete room.');
+        }
     }
 }
