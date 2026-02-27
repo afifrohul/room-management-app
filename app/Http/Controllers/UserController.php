@@ -117,6 +117,7 @@ class UserController extends Controller
             $user->save();
 
             $user->syncRoles($request->role);
+            $user->touch();
 
             return redirect()->route('users.index')->with('success', 'User updated successfully.');
         } catch (\Exception $e) {

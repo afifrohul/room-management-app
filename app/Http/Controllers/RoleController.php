@@ -17,7 +17,7 @@ class RoleController extends Controller
     public function index()
     {
         try {
-            $roles = Role::with(['permissions:id,name'])->select('id', 'name', 'created_at', 'updated_at')->get();
+            $roles = Role::with(['permissions:id,name,created_at,updated_at'])->select('id', 'name', 'created_at', 'updated_at')->get();
 
             $roles = $roles->map(function ($role) {
                 return [
@@ -25,7 +25,8 @@ class RoleController extends Controller
                     'name' => $role->name,
                     'created_at' => $role->created_at,
                     'updated_at' => $role->updated_at,
-                    'permissions' => $role->permissions?->pluck('name')->toArray()
+                    'permissions' => $role->permissions?->pluck('name')->toArray(),
+                    'permissions_updated_at' => $role->permissions?->max('updated_at') ?? $role->updated_at
                 ];
             });
 
@@ -115,6 +116,7 @@ class RoleController extends Controller
             $role = Role::findOrFail($id);
             $role->update($request->only('name'));
             $role->syncPermissions($request->permissions);
+            $role->touch();
 
             return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
         } catch (\Exception $e) {
