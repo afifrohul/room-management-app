@@ -2,29 +2,29 @@ import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { PermissionForm } from './partials/formRoom';
-import { Permission } from '@/types/permission';
+import { RoomForm } from './partials/formRoom';
+import { Room } from '@/types/room';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Permission - Edit', href: '/permissions/edit' },
+    { title: 'Room - Edit', href: '/room/edit' },
 ];
 
 interface EditProps {
-    permission: Permission;
+    room: Room;
 }
 
-export default function Edit({ permission }: EditProps) {
+export default function Edit({ room }: EditProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Edit Permission" />
+            <Head title="Edit Room" />
             <div className="container mx-auto p-4">
                 <div className="rounded-md border p-4">
-                    <h1 className="mb-4 text-xl font-bold">Edit Permission</h1>
+                    <h1 className="mb-4 text-xl font-bold">Edit Room</h1>
                     <Separator className="my-4" />
-                    <PermissionForm
-                        submitUrl={`/permissions/${permission.id}`}
+                    <RoomForm
+                        submitUrl={`/rooms/${room.id}`}
                         method="put"
-                        initialData={permission}
+                        initialData={room}
                     />
                 </div>
             </div>

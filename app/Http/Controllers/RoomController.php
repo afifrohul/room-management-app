@@ -73,7 +73,13 @@ class RoomController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            $room = Room::findOrFail($id);
+            return Inertia::render('room/edit', compact('room'));
+        } catch (\Exception $e) {
+            Log::error('Error loading edit form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load edit form.');
+        }
     }
 
     /**
@@ -81,7 +87,25 @@ class RoomController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'desc' => 'required',
+        ]);
+
+        try {
+
+            $room = Room::findOrFail($id);
+            $room->name = $request->name;
+            $room->desc = $request->desc;
+            $room->save();
+
+            return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error updating room: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update room.');
+        }
+
+
     }
 
     /**
