@@ -6,33 +6,41 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-interface PermissionFormProps {
+interface RoomFormProps {
     initialData?: {
         id: number;
         name: string;
+        desc: string;
     };
     submitUrl: string;
     method?: 'post' | 'put';
 }
 
-export function PermissionForm({
+export function RoomForm({
     initialData,
     submitUrl,
     method = 'post',
-}: PermissionFormProps) {
+}: RoomFormProps) {
     const { errors } = usePage().props;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [form, setForm] = useState({
         name: initialData?.name || '',
+        desc: initialData?.desc || '',
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        setForm((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
     };
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
@@ -45,6 +53,8 @@ export function PermissionForm({
         });
     };
 
+    console.log(form);
+
     return (
         <form onSubmit={handleSubmit}>
             <div>
@@ -56,22 +66,40 @@ export function PermissionForm({
                         >
                             Name
                         </FieldLabel>
-                        <FieldDescription className="text-xs">
-                            Choose a unique permission name. Using
-                            "resource.action" format. Example: post.create
-                        </FieldDescription>
                         <Input
                             id="name"
                             type="text"
                             name="name"
                             value={form.name}
                             onChange={handleChange}
-                            placeholder="Enter permission name"
+                            placeholder="Enter room name"
                             className={`${errors.name ? 'border-destructive' : ''}`}
                         />
                         {errors.name && (
                             <FieldDescription className="text-xs text-destructive">
                                 {errors.name}
+                            </FieldDescription>
+                        )}
+                    </Field>
+                    <Field>
+                        <FieldLabel
+                            htmlFor="desc"
+                            className={`${errors.desc ? 'text-destructive' : ''}`}
+                        >
+                            Description
+                        </FieldLabel>
+                        <Textarea
+                            id="desc"
+                            name="desc"
+                            placeholder="Enter room description"
+                            rows={4}
+                            value={form.desc}
+                            onChange={handleChange}
+                            className={`${errors.desc ? 'border-destructive' : ''}`}
+                        />
+                        {errors.desc && (
+                            <FieldDescription className="text-xs text-destructive">
+                                {errors.desc}
                             </FieldDescription>
                         )}
                     </Field>
@@ -82,7 +110,7 @@ export function PermissionForm({
                     type="button"
                     variant="outline"
                     disabled={isSubmitting}
-                    onClick={() => router.get('/permissions')}
+                    onClick={() => router.get('/rooms')}
                 >
                     Cancel
                 </Button>

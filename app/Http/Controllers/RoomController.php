@@ -28,7 +28,12 @@ class RoomController extends Controller
      */
     public function create()
     {
-        //
+        try {
+            return Inertia::render('room/create');
+        } catch (\Exception $e) {
+            Log::error('Error loading create form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load create form.');
+        }
     }
 
     /**
@@ -36,7 +41,23 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'desc' => 'required',
+        ]);
+
+        try {
+
+            $room = new Room();
+            $room->name = $request->name;
+            $room->desc = $request->desc;
+            $room->save();
+
+            return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error creating room: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to create room.');
+        }
     }
 
     /**
