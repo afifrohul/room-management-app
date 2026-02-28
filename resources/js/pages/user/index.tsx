@@ -4,11 +4,11 @@ import EditButton from '@/components/edit-button';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
+import { User } from '@/types/data/user';
 import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { FaPlusCircle } from 'react-icons/fa';
 import { format } from 'date-fns';
-import { Role } from '@/types/data/role';
+import { SquarePlus } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,17 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/users',
     },
 ];
-
-type User = {
-    id: number;
-    name: string;
-    email: string;
-    created_at: string;
-    roles: {
-        id: number;
-        name: string;
-    }[];
-};
 
 interface IndexProps {
     users: User[];
@@ -91,8 +80,7 @@ export default function Index({ users }: IndexProps) {
                                     variant="outline"
                                     onClick={() => router.get('/users/create')}
                                 >
-                                    <FaPlusCircle className="mr-2" /> Create New
-                                    User
+                                    <SquarePlus className="" /> Create New
                                 </Button>
                             }
                         />

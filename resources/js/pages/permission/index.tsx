@@ -6,9 +6,9 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { FaPlusCircle } from 'react-icons/fa';
 import { format } from 'date-fns';
 import { Permission } from '@/types/data/permission';
+import { SquarePlus } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -72,8 +72,7 @@ export default function Index({ permissions }: IndexProps) {
                                         router.get('/permissions/create')
                                     }
                                 >
-                                    <FaPlusCircle className="mr-2" /> Create New
-                                    Permission
+                                    <SquarePlus className="" /> Create New
                                 </Button>
                             }
                         />
