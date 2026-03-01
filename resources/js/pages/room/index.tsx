@@ -40,13 +40,13 @@ export default function Index({ rooms }: IndexProps) {
             accessorKey: 'created_at',
             header: 'Created Date',
             cell: (info) =>
-                format(info.getValue() as Date, 'dd MMMM yyyy - HH:mm:ss'),
+                format(info.getValue() as Date, 'dd MMMM yyyy - HH.mm.ss'),
         },
         {
             accessorKey: 'updated_at',
             header: 'Last Updated',
             cell: (info) =>
-                format(info.getValue() as Date, 'dd MMMM yyyy - HH:mm:ss'),
+                format(info.getValue() as Date, 'dd MMMM yyyy - HH.mm.ss'),
         },
         {
             id: 'actions',
