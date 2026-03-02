@@ -15,7 +15,7 @@ class AgendaController extends Controller
     public function index()
     {
         try {
-            $agendas = Agenda::with(['user', 'agendaRoomBookings.room'])->get();
+            $agendas = Agenda::with(['user', 'agendaRoomBookings.room'])->latest()->get();
             
             return Inertia::render('agenda/index', compact('agendas'));
         } catch (\Exception $e) {

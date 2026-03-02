@@ -15,4 +15,6 @@ export type Agenda = {
         end_datetime: string;
         room: Room;
     }[];
+    created_at: string;
+    updated_at: string;
 };

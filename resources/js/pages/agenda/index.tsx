@@ -41,14 +41,6 @@ export default function Index({ agendas }: IndexProps) {
             cell: (info) => info.getValue(),
         },
         {
-            accessorKey: 'desc',
-            header: 'Description',
-            cell: ({ row }) =>
-                row.original.desc?.length > 25
-                    ? row.original.desc.substring(0, 25) + '...'
-                    : row.original.desc || '-',
-        },
-        {
             accessorKey: 'agenda_room_bookings',
             header: 'Room Request',
             cell: ({ row }) => (
@@ -92,6 +84,12 @@ export default function Index({ agendas }: IndexProps) {
                         icon={<CircleAlert className="h-3.5 w-3.5" />}
                     />
                 ) : null,
+        },
+        {
+            accessorKey: 'created_at',
+            header: 'Request Date',
+            cell: ({ row }) =>
+                format(row.original.created_at, 'dd MMM yyyy - HH.mm'),
         },
         {
             id: 'actions',
