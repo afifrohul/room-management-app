@@ -8,7 +8,8 @@ import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Room } from '@/types/data/room';
-import { SquarePlus } from 'lucide-react';
+import { CircleAlert, CircleCheck, CircleX, SquarePlus } from 'lucide-react';
+import SubtleBadge from '@/components/subtle-badge';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -35,6 +36,24 @@ export default function Index({ rooms }: IndexProps) {
                 row.original.desc?.length > 120
                     ? row.original.desc.substring(0, 120) + '...'
                     : row.original.desc || '-',
+        },
+        {
+            accessorKey: 'status',
+            header: 'Status',
+            cell: ({ row }) =>
+                row.original.status == 'available' ? (
+                    <SubtleBadge
+                        label={row.original.status}
+                        color="teal"
+                        icon={<CircleCheck className="h-3.5 w-3.5" />}
+                    />
+                ) : (
+                    <SubtleBadge
+                        label={row.original.status}
+                        color="rose"
+                        icon={<CircleX className="h-3.5 w-3.5" />}
+                    />
+                ),
         },
         {
             accessorKey: 'created_at',
