@@ -1,5 +1,15 @@
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, Logs, Users, Key, LockKeyhole, UserCog, DoorOpen } from 'lucide-react';
+import {
+    LayoutGrid,
+    Logs,
+    Users,
+    Key,
+    LockKeyhole,
+    UserCog,
+    DoorOpen,
+    CalendarRange,
+    History,
+} from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -47,6 +57,19 @@ const masterDataItems: NavItem[] = [
     },
 ];
 
+const requestItems: NavItem[] = [
+    {
+        title: 'Agenda & Room',
+        href: '/agenda-rooms',
+        icon: CalendarRange,
+    },
+    // {
+    //     title: 'History',
+    //     href: '/histories',
+    //     icon: History,
+    // },
+];
+
 const footerNavItems: NavItem[] = [
     {
         title: 'Logs Viewer',
@@ -73,6 +96,7 @@ export function AppSidebar() {
             <SidebarContent>
                 <NavMain header={'Dashboard'} items={dashboardItems} />
                 <NavMain header={'Master Data'} items={masterDataItems} />
+                <NavMain header={'Request'} items={requestItems} />
             </SidebarContent>
 
             <SidebarFooter>

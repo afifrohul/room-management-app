@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('room_requests', function (Blueprint $table) {
+        Schema::create('agendas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('room_id');
-            $table->string('room_name');
-            $table->datetime('datetime');
+            $table->string('title');
+            $table->text('desc');
+            $table->enum('status', ['requested', 'approved', 'rejected', 'revision']);
+            $table->text('revision_note')->nullable();
             $table->string('file')->nullable();
-            $table->enum('status', ['draft', 'requested', 'approved', 'rejected', 'revision']);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('room_requests');
+        Schema::dropIfExists('agendas');
     }
 };

@@ -8,6 +8,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\AgendaController;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
@@ -45,6 +46,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooms/{id}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
     Route::put('/rooms/{id}', [RoomController::class, 'update'])->name('rooms.update');
     Route::delete('/rooms/{id}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+
+    Route::get('/agenda-rooms', [AgendaController::class, 'index'])->name('agenda-rooms.index');
+    Route::get('/agenda-rooms/create', [AgendaController::class, 'create'])->name('agenda-rooms.create');
+    Route::post('/agenda-rooms', [AgendaController::class, 'store'])->name('agenda-rooms.store');
+    Route::get('/agenda-rooms/{id}/edit', [AgendaController::class, 'edit'])->name('agenda-rooms.edit');
+    Route::put('/agenda-rooms/{id}', [AgendaController::class, 'update'])->name('agenda-rooms.update');
+    Route::delete('/agenda-rooms/{id}', [AgendaController::class, 'destroy'])->name('agenda-rooms.destroy');
 });
 
 require __DIR__.'/settings.php';
