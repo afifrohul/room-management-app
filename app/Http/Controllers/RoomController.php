@@ -44,6 +44,7 @@ class RoomController extends Controller
         $request->validate([
             'name' => 'required',
             'desc' => 'required',
+            'status' => 'required'
         ]);
 
         try {
@@ -51,6 +52,7 @@ class RoomController extends Controller
             $room = new Room();
             $room->name = $request->name;
             $room->desc = $request->desc;
+            $room->status = $request->status;
             $room->save();
 
             return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
@@ -90,6 +92,7 @@ class RoomController extends Controller
         $request->validate([
             'name' => 'required',
             'desc' => 'required',
+            'status' => 'required'
         ]);
 
         try {
@@ -97,6 +100,7 @@ class RoomController extends Controller
             $room = Room::findOrFail($id);
             $room->name = $request->name;
             $room->desc = $request->desc;
+            $room->status = $request->status;
             $room->save();
 
             return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');

@@ -6,6 +6,14 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -15,6 +23,7 @@ interface RoomFormProps {
         id: number;
         name: string;
         desc: string;
+        status: 'available' | 'unavailable';
     };
     submitUrl: string;
     method?: 'post' | 'put';
@@ -32,6 +41,7 @@ export function RoomForm({
     const [form, setForm] = useState({
         name: initialData?.name || '',
         desc: initialData?.desc || '',
+        status: initialData?.status || '',
     });
 
     const handleChange = (
@@ -52,8 +62,6 @@ export function RoomForm({
             onError: () => setIsSubmitting(false),
         });
     };
-
-    console.log(form);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -102,6 +110,34 @@ export function RoomForm({
                                 {errors.desc}
                             </FieldDescription>
                         )}
+                    </Field>
+                    <Field>
+                        <FieldLabel
+                            htmlFor="role"
+                            className={`${errors.role ? 'text-destructive' : ''}`}
+                        >
+                            Role
+                        </FieldLabel>
+                        <Select
+                            value={form.status}
+                            onValueChange={(value) =>
+                                setForm({ ...form, status: value })
+                            }
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem value="available">
+                                        Available
+                                    </SelectItem>
+                                    <SelectItem value="unavailable">
+                                        Unavailable
+                                    </SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </Field>
                 </FieldGroup>
             </div>
