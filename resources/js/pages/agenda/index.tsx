@@ -48,8 +48,8 @@ export default function Index({ agendas }: IndexProps) {
                     {row.original.agenda_room_bookings?.map((item, index) => (
                         <p key={index}>
                             {item.room.name} |{' '}
-                            {format(item.start_datetime, 'dd MMM yyyy - HH.mm')}{' '}
-                            - {format(item.end_datetime, 'dd MMM yyyy - HH.mm')}
+                            {format(item.start_datetime, 'dd MMM yyyy / HH.mm')}{' '}
+                            - {format(item.end_datetime, 'dd MMM yyyy / HH.mm')}
                         </p>
                     ))}
                 </div>
