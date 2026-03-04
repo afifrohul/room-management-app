@@ -29,7 +29,12 @@ class AgendaController extends Controller
      */
     public function create()
     {
-        //
+        try {
+            return Inertia::render('agenda/create');
+        } catch (\Exception $e) {
+            Log::error('Error loading create form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load create form.');
+        }
     }
 
     /**
@@ -53,7 +58,13 @@ class AgendaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            $agenda = Agenda::findOrFail($id);
+            return Inertia::render('agenda/edit', compact('agenda'));
+        } catch (\Exception $e) {
+            Log::error('Error loading edit form: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load edit form.');
+        }
     }
 
     /**
