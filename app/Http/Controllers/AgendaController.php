@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\AgendaRoomBooking;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AgendaController extends Controller
@@ -44,7 +46,38 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'desc' => 'required',
+            'agenda_room_bookings' => 'required|array'
+        ]);
+
+        try {
+
+            DB::transaction(function () use ($request) {
+                $agenda = new Agenda();
+                $agenda->user_id = 8;
+                $agenda->title = $request->title;
+                $agenda->desc = $request->desc;
+                $agenda->desc = 'requested';
+                $agenda->save();
+
+                foreach ($request->agenda_room_bookings as $booking) {
+                    $item = new AgendaRoomBooking();
+                    $item->agenda_id = $agenda->id;
+                    $item->room_id = $booking['room_id'];
+                    $item->start_datetime = $booking['start_datetime'];
+                    $item->end_datetime = $booking['end_datetime'];
+                    $item->save();
+                }
+            });
+
+            return redirect()->route('agenda-rooms.index')->with('success', 'Agenda room request created successfully.');
+
+        } catch (\Exception $e) {
+             Log::error('Error creating agenda room request: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to create agenda room request.');
+        }
     }
 
     /**
@@ -75,7 +108,40 @@ class AgendaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'desc' => 'required',
+            'agenda_room_bookings' => 'required|array'
+        ]);
+
+        try {
+
+            DB::transaction(function () use ($request, $id) {
+                $agenda = Agenda::findOrFail($id);
+                $agenda->title = $request->title;
+                $agenda->desc = $request->desc;
+                $agenda->save();
+
+                $agenda_room_bookings = AgendaRoomBooking::where('agenda_id', $agenda->id)->pluck('id')->toArray();
+
+                AgendaRoomBooking::forceDestroy($agenda_room_bookings);
+
+                foreach ($request->agenda_room_bookings as $booking) {
+                    $item = new AgendaRoomBooking();
+                    $item->agenda_id = $agenda->id;
+                    $item->room_id = $booking['room_id'];
+                    $item->start_datetime = $booking['start_datetime'];
+                    $item->end_datetime = $booking['end_datetime'];
+                    $item->save();
+                }
+            });
+
+            return redirect()->route('agenda-rooms.index')->with('success', 'Agenda room request updated successfully.');
+
+        } catch (\Exception $e) {
+             Log::error('Error updating agenda room request: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update agenda room request.');
+        }
     }
 
     /**
@@ -83,6 +149,20 @@ class AgendaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+
+            $agenda = Agenda::findOrFail($id);
+
+            $agenda_room_bookings = AgendaRoomBooking::where('agenda_id', $id)->pluck('id')->toArray();
+
+            AgendaRoomBooking::destroy($agenda_room_bookings);
+
+            $agenda->delete();
+
+            return redirect()->route('agenda-rooms.index')->with('success', 'Agenda room deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error deleting agenda room request: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete agenda room request.');
+        }
     }
 }

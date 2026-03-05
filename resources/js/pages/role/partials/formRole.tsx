@@ -27,8 +27,6 @@ export function RoleForm({
     method = 'post',
     permissions,
 }: RoleFormProps) {
-    console.log(initialData);
-
     const { errors } = usePage().props;
 
     const [isSubmitting, setIsSubmitting] = useState(false);

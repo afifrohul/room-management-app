@@ -25,7 +25,11 @@ interface AgendaFormProps {
         id: number;
         title: string;
         desc: string;
-        agenda_room_bookings: [];
+        agenda_room_bookings: {
+            room_id: number;
+            start_datetime: string;
+            end_datetime: string;
+        }[];
     };
     submitUrl: string;
     method?: 'post' | 'put';
@@ -38,8 +42,6 @@ export function AgendaForm({
     method = 'post',
     rooms,
 }: AgendaFormProps) {
-    console.log(initialData);
-
     const { errors } = usePage().props;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +53,7 @@ export function AgendaForm({
             ? initialData.agenda_room_bookings
             : [
                   {
-                      room_id: '',
+                      room_id: 0,
                       start_datetime: '',
                       end_datetime: '',
                   },
@@ -73,7 +75,7 @@ export function AgendaForm({
             agenda_room_bookings: [
                 ...prev.agenda_room_bookings,
                 {
-                    room_id: '',
+                    room_id: 0,
                     start_datetime: '',
                     end_datetime: '',
                 },
@@ -116,8 +118,6 @@ export function AgendaForm({
             onError: () => setIsSubmitting(false),
         });
     };
-
-    console.log(form);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -173,7 +173,7 @@ export function AgendaForm({
                                 <Field>
                                     <FieldLabel>Room</FieldLabel>
                                     <Select
-                                        value={booking.room_id.toString()}
+                                        value={String(booking.room_id)}
                                         onValueChange={(value) =>
                                             handleBookingChange(
                                                 index,
