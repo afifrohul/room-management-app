@@ -6,8 +6,7 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { router, useForm } from '@inertiajs/react';
 
 interface PermissionFormProps {
     initialData?: {
@@ -23,71 +22,66 @@ export function PermissionForm({
     submitUrl,
     method = 'post',
 }: PermissionFormProps) {
-    const { errors } = usePage().props;
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const [form, setForm] = useState({
+    const { data, setData, post, put, processing, errors } = useForm({
         name: initialData?.name || '',
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        router[method](submitUrl, form, {
-            onFinish: () => setIsSubmitting(false),
-            onError: () => setIsSubmitting(false),
-        });
+        if (method === 'post') {
+            post(submitUrl);
+        } else {
+            put(submitUrl);
+        }
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <div>
-                <FieldGroup>
-                    <Field>
-                        <FieldLabel
-                            htmlFor="name"
-                            className={`${errors.name ? 'text-destructive' : ''}`}
-                        >
-                            Name
-                        </FieldLabel>
-                        <FieldDescription className="text-xs">
-                            Choose a unique permission name. Using
-                            "resource.action" format. Example: post.create
+            <FieldGroup>
+                <Field>
+                    <FieldLabel
+                        htmlFor="name"
+                        className={errors.name ? 'text-destructive' : ''}
+                    >
+                        Name
+                    </FieldLabel>
+
+                    <FieldDescription className="text-xs">
+                        Choose a unique permission name using "resource.action"
+                        format. Example: post.create
+                    </FieldDescription>
+
+                    <Input
+                        id="name"
+                        type="text"
+                        name="name"
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value)}
+                        placeholder="Enter permission name"
+                        className={errors.name ? 'border-destructive' : ''}
+                    />
+
+                    {errors.name && (
+                        <FieldDescription className="text-xs text-destructive">
+                            {errors.name}
                         </FieldDescription>
-                        <Input
-                            id="name"
-                            type="text"
-                            name="name"
-                            value={form.name}
-                            onChange={handleChange}
-                            placeholder="Enter permission name"
-                            className={`${errors.name ? 'border-destructive' : ''}`}
-                        />
-                        {errors.name && (
-                            <FieldDescription className="text-xs text-destructive">
-                                {errors.name}
-                            </FieldDescription>
-                        )}
-                    </Field>
-                </FieldGroup>
-            </div>
+                    )}
+                </Field>
+            </FieldGroup>
+
             <div className="mt-4 flex justify-end gap-2">
                 <Button
                     type="button"
                     variant="outline"
-                    disabled={isSubmitting}
+                    disabled={processing}
                     onClick={() => router.get('/permissions')}
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting
+
+                <Button type="submit" disabled={processing}>
+                    {processing
                         ? 'Saving...'
                         : method === 'post'
                           ? 'Create'
