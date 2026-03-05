@@ -4,6 +4,7 @@ import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { AgendaForm } from './partials/formAgenda';
 import { Agenda } from '@/types/data/agenda';
+import { Room } from '@/types/data/room';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Agenda Room Request - Edit', href: '/agenda-rooms/edit' },
@@ -11,9 +12,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface EditProps {
     agenda: Agenda;
+    rooms: Room[];
 }
 
-export default function Edit({ agenda }: EditProps) {
+export default function Edit({ agenda, rooms }: EditProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Agenda Room Request" />
@@ -27,6 +29,7 @@ export default function Edit({ agenda }: EditProps) {
                         submitUrl={`/agenda-rooms/${agenda.id}`}
                         method="put"
                         initialData={agenda}
+                        rooms={rooms}
                     />
                 </div>
             </div>

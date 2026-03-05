@@ -9,12 +9,7 @@ export type Agenda = {
     revision_note: string;
     status: string;
     user: User;
-    agenda_room_bookings: {
-        id: number;
-        start_datetime: string;
-        end_datetime: string;
-        room: Room;
-    }[];
+    agenda_room_bookings: [];
     created_at: string;
     updated_at: string;
 };

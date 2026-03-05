@@ -3,12 +3,17 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { AgendaForm } from './partials/formAgenda';
+import { Room } from '@/types/data/room';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Agenda Room Request - Create', href: '/agenda-rooms/create' },
 ];
 
-export default function Create() {
+interface CreateProps {
+    rooms: Room[];
+}
+
+export default function Create({ rooms }: CreateProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Agenda Room Request" />
@@ -18,7 +23,11 @@ export default function Create() {
                         Create Agenda Room Request
                     </h1>
                     <Separator className="my-4" />
-                    <AgendaForm submitUrl="/agenda-rooms" method="post" />
+                    <AgendaForm
+                        submitUrl="/agenda-rooms"
+                        method="post"
+                        rooms={rooms}
+                    />
                 </div>
             </div>
         </AppLayout>

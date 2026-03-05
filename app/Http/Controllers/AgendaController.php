@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -30,7 +31,8 @@ class AgendaController extends Controller
     public function create()
     {
         try {
-            return Inertia::render('agenda/create');
+            $rooms = Room::get();
+            return Inertia::render('agenda/create', compact('rooms'));
         } catch (\Exception $e) {
             Log::error('Error loading create form: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load create form.');
@@ -59,8 +61,9 @@ class AgendaController extends Controller
     public function edit(string $id)
     {
         try {
-            $agenda = Agenda::findOrFail($id);
-            return Inertia::render('agenda/edit', compact('agenda'));
+            $rooms = Room::get();
+            $agenda = Agenda::with('agendaRoomBookings')->findOrFail($id);
+            return Inertia::render('agenda/edit', compact('agenda', 'rooms'));
         } catch (\Exception $e) {
             Log::error('Error loading edit form: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load edit form.');

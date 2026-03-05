@@ -15,7 +15,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Room } from '@/types/data/room';
 import { router, usePage } from '@inertiajs/react';
+import { Trash } from 'lucide-react';
 import { useState } from 'react';
 
 interface AgendaFormProps {
@@ -23,16 +25,21 @@ interface AgendaFormProps {
         id: number;
         title: string;
         desc: string;
+        agenda_room_bookings: [];
     };
     submitUrl: string;
     method?: 'post' | 'put';
+    rooms: Room[];
 }
 
 export function AgendaForm({
     initialData,
     submitUrl,
     method = 'post',
+    rooms,
 }: AgendaFormProps) {
+    console.log(initialData);
+
     const { errors } = usePage().props;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,6 +47,15 @@ export function AgendaForm({
     const [form, setForm] = useState({
         title: initialData?.title || '',
         desc: initialData?.desc || '',
+        agenda_room_bookings: initialData?.agenda_room_bookings?.length
+            ? initialData.agenda_room_bookings
+            : [
+                  {
+                      room_id: '',
+                      start_datetime: '',
+                      end_datetime: '',
+                  },
+              ],
     });
 
     const handleChange = (
@@ -48,6 +64,46 @@ export function AgendaForm({
         setForm((prev) => ({
             ...prev,
             [e.target.name]: e.target.value,
+        }));
+    };
+
+    const addBooking = () => {
+        setForm((prev) => ({
+            ...prev,
+            agenda_room_bookings: [
+                ...prev.agenda_room_bookings,
+                {
+                    room_id: '',
+                    start_datetime: '',
+                    end_datetime: '',
+                },
+            ],
+        }));
+    };
+
+    const removeBooking = (index: number) => {
+        setForm((prev) => ({
+            ...prev,
+            agenda_room_bookings: prev.agenda_room_bookings.filter(
+                (_, i) => i !== index,
+            ),
+        }));
+    };
+
+    const handleBookingChange = (
+        index: number,
+        field: string,
+        value: string,
+    ) => {
+        const updatedBookings = [...form.agenda_room_bookings];
+        updatedBookings[index] = {
+            ...updatedBookings[index],
+            [field]: value,
+        };
+
+        setForm((prev) => ({
+            ...prev,
+            agenda_room_bookings: updatedBookings,
         }));
     };
 
@@ -60,6 +116,8 @@ export function AgendaForm({
             onError: () => setIsSubmitting(false),
         });
     };
+
+    console.log(form);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -109,6 +167,87 @@ export function AgendaForm({
                             </FieldDescription>
                         )}
                     </Field>
+                    {form.agenda_room_bookings.map((booking, index) => (
+                        <div key={index} className="flex w-full">
+                            <div className="w-full space-y-4 rounded-md border p-4">
+                                <Field>
+                                    <FieldLabel>Room</FieldLabel>
+                                    <Select
+                                        value={booking.room_id.toString()}
+                                        onValueChange={(value) =>
+                                            handleBookingChange(
+                                                index,
+                                                'room_id',
+                                                value,
+                                            )
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select room" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {rooms.map((room) => (
+                                                <SelectItem
+                                                    key={room.id}
+                                                    value={room.id.toString()}
+                                                >
+                                                    {room.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </Field>
+
+                                <Field>
+                                    <FieldLabel>Start</FieldLabel>
+                                    <Input
+                                        type="datetime-local"
+                                        value={booking.start_datetime}
+                                        onChange={(e) =>
+                                            handleBookingChange(
+                                                index,
+                                                'start_datetime',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                </Field>
+
+                                <Field>
+                                    <FieldLabel>End</FieldLabel>
+                                    <Input
+                                        type="datetime-local"
+                                        value={booking.end_datetime}
+                                        onChange={(e) =>
+                                            handleBookingChange(
+                                                index,
+                                                'end_datetime',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                </Field>
+                            </div>
+                            <div className="ml-4 flex justify-end">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="h-full"
+                                    onClick={() => removeBooking(index)}
+                                >
+                                    <Trash className="text-rose-600" />
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+
+                    <Button
+                        type="button"
+                        onClick={addBooking}
+                        variant="outline"
+                    >
+                        + Add Room
+                    </Button>
                 </FieldGroup>
             </div>
             <div className="mt-4 flex justify-end gap-2">
