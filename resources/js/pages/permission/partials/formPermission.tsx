@@ -26,6 +26,10 @@ export function PermissionForm({
         name: initialData?.name || '',
     });
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setData(e.target.name as keyof typeof data, e.target.value);
+    };
+
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -57,7 +61,7 @@ export function PermissionForm({
                         type="text"
                         name="name"
                         value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={handleChange}
                         placeholder="Enter permission name"
                         className={errors.name ? 'border-destructive' : ''}
                     />
