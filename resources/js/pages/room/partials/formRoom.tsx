@@ -15,8 +15,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { router, useForm } from '@inertiajs/react';
 
 interface RoomFormProps {
     initialData?: {
@@ -34,11 +33,7 @@ export function RoomForm({
     submitUrl,
     method = 'post',
 }: RoomFormProps) {
-    const { errors } = usePage().props;
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const [form, setForm] = useState({
+    const { data, setData, post, put, processing, errors } = useForm({
         name: initialData?.name || '',
         desc: initialData?.desc || '',
         status: initialData?.status || '',
@@ -47,20 +42,17 @@ export function RoomForm({
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
-        setForm((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
+        setData(e.target.name as keyof typeof data, e.target.value);
     };
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        router[method](submitUrl, form, {
-            onFinish: () => setIsSubmitting(false),
-            onError: () => setIsSubmitting(false),
-        });
+        if (method === 'post') {
+            post(submitUrl);
+        } else {
+            put(submitUrl);
+        }
     };
 
     return (
@@ -78,7 +70,7 @@ export function RoomForm({
                             id="name"
                             type="text"
                             name="name"
-                            value={form.name}
+                            value={data.name}
                             onChange={handleChange}
                             placeholder="Enter room name"
                             className={`${errors.name ? 'border-destructive' : ''}`}
@@ -101,7 +93,7 @@ export function RoomForm({
                             name="desc"
                             placeholder="Enter room description"
                             rows={4}
-                            value={form.desc}
+                            value={data.desc}
                             onChange={handleChange}
                             className={`${errors.desc ? 'border-destructive' : ''}`}
                         />
@@ -113,16 +105,14 @@ export function RoomForm({
                     </Field>
                     <Field>
                         <FieldLabel
-                            htmlFor="role"
-                            className={`${errors.role ? 'text-destructive' : ''}`}
+                            htmlFor="status"
+                            className={`${errors.status ? 'text-destructive' : ''}`}
                         >
-                            Role
+                            Status
                         </FieldLabel>
                         <Select
-                            value={form.status}
-                            onValueChange={(value) =>
-                                setForm({ ...form, status: value })
-                            }
+                            value={data.status}
+                            onValueChange={(value) => setData('status', value)}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a status" />
@@ -145,13 +135,13 @@ export function RoomForm({
                 <Button
                     type="button"
                     variant="outline"
-                    disabled={isSubmitting}
+                    disabled={processing}
                     onClick={() => router.get('/rooms')}
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting
+                <Button type="submit" disabled={processing}>
+                    {processing
                         ? 'Saving...'
                         : method === 'post'
                           ? 'Create'
