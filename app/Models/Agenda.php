@@ -9,6 +9,8 @@ class Agenda extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['file'];
+
     public function user()
     {
         return $this->belongsTo(User::class);

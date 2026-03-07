@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Agenda;
 use App\Models\AgendaRoomBooking;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AgendaController extends Controller
@@ -49,18 +51,28 @@ class AgendaController extends Controller
         $request->validate([
             'title' => 'required',
             'desc' => 'required',
-            'agenda_room_bookings' => 'required|array'
+            'agenda_room_bookings' => 'required|array',
+            'file' => 'nullable|file|max:2048'
         ]);
 
         try {
 
             DB::transaction(function () use ($request) {
                 $agenda = new Agenda();
-                $agenda->user_id = 8;
+                $agenda->user_id = auth()->id();
                 $agenda->title = $request->title;
                 $agenda->desc = $request->desc;
                 $agenda->desc = 'requested';
                 $agenda->save();
+
+                if ($request->hasFile('file')) {
+                    $file = $request->file('file');
+                    $filename = User::find(auth()->id())->name . '_' . time() . '_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('uploads/agenda_files/' . $agenda->id, $filename, 'public');
+                    $agenda->update([
+                        'file' => $filePath
+                    ]);
+                }
 
                 foreach ($request->agenda_room_bookings as $booking) {
                     $item = new AgendaRoomBooking();
@@ -96,6 +108,12 @@ class AgendaController extends Controller
         try {
             $rooms = Room::get();
             $agenda = Agenda::with('agendaRoomBookings')->findOrFail($id);
+
+            $agenda = [
+                ...$agenda->toArray(),
+                'file' => $agenda->file ? asset('storage/' . $agenda->file) : null
+            ];
+
             return Inertia::render('agenda/edit', compact('agenda', 'rooms'));
         } catch (\Exception $e) {
             Log::error('Error loading edit form: ' . $e->getMessage());
@@ -121,6 +139,20 @@ class AgendaController extends Controller
                 $agenda->title = $request->title;
                 $agenda->desc = $request->desc;
                 $agenda->save();
+
+                if ($request->hasFile('file')) {
+
+                    if ($agenda->file) {
+                        Storage::disk('public')->delete($agenda->file);
+                    }
+
+                    $file = $request->file('file');
+                    $filename = User::find(auth()->id())->name . '_' . time() . '_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('uploads/agenda_files/' . $agenda->id, $filename, 'public');
+                    $agenda->update([
+                        'file' => $filePath
+                    ]);
+                }
 
                 $agenda_room_bookings = AgendaRoomBooking::where('agenda_id', $agenda->id)->pluck('id')->toArray();
 

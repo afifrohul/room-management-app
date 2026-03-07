@@ -6,6 +6,7 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 import {
     Select,
     SelectContent,
@@ -16,15 +17,15 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Room } from '@/types/data/room';
-import { router, usePage } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { Trash } from 'lucide-react';
-import { useState } from 'react';
 
 interface AgendaFormProps {
     initialData?: {
         id: number;
         title: string;
         desc: string;
+        file: string;
         agenda_room_bookings: {
             room_id: number;
             start_datetime: string;
@@ -42,13 +43,10 @@ export function AgendaForm({
     method = 'post',
     rooms,
 }: AgendaFormProps) {
-    const { errors } = usePage().props;
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const [form, setForm] = useState({
+    const { data, setData, post, put, processing, progress, errors } = useForm({
         title: initialData?.title || '',
         desc: initialData?.desc || '',
+        file: (initialData?.file || '') as string | File,
         agenda_room_bookings: initialData?.agenda_room_bookings?.length
             ? initialData.agenda_room_bookings
             : [
@@ -63,14 +61,14 @@ export function AgendaForm({
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
-        setForm((prev) => ({
+        setData((prev) => ({
             ...prev,
             [e.target.name]: e.target.value,
         }));
     };
 
     const addBooking = () => {
-        setForm((prev) => ({
+        setData((prev) => ({
             ...prev,
             agenda_room_bookings: [
                 ...prev.agenda_room_bookings,
@@ -84,7 +82,7 @@ export function AgendaForm({
     };
 
     const removeBooking = (index: number) => {
-        setForm((prev) => ({
+        setData((prev) => ({
             ...prev,
             agenda_room_bookings: prev.agenda_room_bookings.filter(
                 (_, i) => i !== index,
@@ -97,26 +95,26 @@ export function AgendaForm({
         field: string,
         value: string,
     ) => {
-        const updatedBookings = [...form.agenda_room_bookings];
+        const updatedBookings = [...data.agenda_room_bookings];
         updatedBookings[index] = {
             ...updatedBookings[index],
             [field]: value,
         };
 
-        setForm((prev) => ({
+        setData((prev) => ({
             ...prev,
             agenda_room_bookings: updatedBookings,
         }));
     };
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        router[method](submitUrl, form, {
-            onFinish: () => setIsSubmitting(false),
-            onError: () => setIsSubmitting(false),
-        });
+        if (method === 'post') {
+            post(submitUrl);
+        } else {
+            put(submitUrl);
+        }
     };
 
     return (
@@ -134,7 +132,7 @@ export function AgendaForm({
                             id="title"
                             type="text"
                             name="title"
-                            value={form.title}
+                            value={data.title}
                             onChange={handleChange}
                             placeholder="Enter agenda title"
                             className={`${errors.title ? 'border-destructive' : ''}`}
@@ -157,7 +155,7 @@ export function AgendaForm({
                             name="desc"
                             placeholder="Enter agenda description"
                             rows={4}
-                            value={form.desc}
+                            value={data.desc}
                             onChange={handleChange}
                             className={`${errors.desc ? 'border-destructive' : ''}`}
                         />
@@ -167,7 +165,56 @@ export function AgendaForm({
                             </FieldDescription>
                         )}
                     </Field>
-                    {form.agenda_room_bookings.map((booking, index) => (
+
+                    <Field>
+                        <FieldLabel htmlFor="file">File Proposal</FieldLabel>
+                        {data.file && (
+                            <div className="flex items-center gap-1">
+                                <p className="text-xs">
+                                    *Do not upload new files if you do not want
+                                    to overwrite the old file.
+                                </p>
+                                <a
+                                    href={data.file as string}
+                                    target="_blank"
+                                    className="text-xs text-indigo-600 underline"
+                                >
+                                    Click here to see old file
+                                </a>
+                            </div>
+                        )}
+                        <Input
+                            id="file"
+                            type="file"
+                            name="file"
+                            onChange={(e) => {
+                                if (
+                                    e.target.files &&
+                                    e.target.files.length > 0
+                                ) {
+                                    setData('file', e.target.files[0]);
+                                }
+                            }}
+                        />
+                        {progress && (
+                            <Field className="w-full">
+                                <FieldLabel htmlFor="progress-upload">
+                                    <span className="text-xs">
+                                        Upload progress
+                                    </span>
+                                    <span className="ml-auto text-xs">
+                                        {progress.percentage}%
+                                    </span>
+                                </FieldLabel>
+                                <Progress
+                                    value={progress.percentage}
+                                    id="progress-upload"
+                                />
+                            </Field>
+                        )}
+                    </Field>
+
+                    {data.agenda_room_bookings.map((booking, index) => (
                         <div key={index} className="flex w-full">
                             <div className="w-full space-y-4 rounded-md border p-4">
                                 <Field>
@@ -254,13 +301,13 @@ export function AgendaForm({
                 <Button
                     type="button"
                     variant="outline"
-                    disabled={isSubmitting}
+                    disabled={processing}
                     onClick={() => router.get('/agenda-rooms')}
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting
+                <Button type="submit" disabled={processing}>
+                    {processing
                         ? 'Saving...'
                         : method === 'post'
                           ? 'Create'
