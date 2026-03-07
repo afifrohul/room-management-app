@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Role } from '@/types/data/role';
-import { router, usePage } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import {
     Select,
@@ -37,11 +37,7 @@ export function UserForm({
     method = 'post',
     roles,
 }: UserFormProps) {
-    const { errors } = usePage().props;
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const [form, setForm] = useState({
+    const { data, setData, post, put, processing, errors } = useForm({
         name: initialData?.name || '',
         email: initialData?.email || '',
         password: '',
@@ -49,17 +45,17 @@ export function UserForm({
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        setData(e.target.name as keyof typeof data, e.target.value);
     };
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        router[method](submitUrl, form, {
-            onFinish: () => setIsSubmitting(false),
-            onError: () => setIsSubmitting(false),
-        });
+        if (method === 'post') {
+            post(submitUrl);
+        } else {
+            put(submitUrl);
+        }
     };
 
     return (
@@ -77,7 +73,7 @@ export function UserForm({
                             id="name"
                             type="text"
                             name="name"
-                            value={form.name}
+                            value={data.name}
                             onChange={handleChange}
                             placeholder="Enter name"
                             className={`${errors.name ? 'border-destructive' : ''}`}
@@ -99,7 +95,7 @@ export function UserForm({
                             id="email"
                             type="email"
                             name="email"
-                            value={form.email}
+                            value={data.email}
                             onChange={handleChange}
                             placeholder="Enter email"
                             className={`${errors.email ? 'border-destructive' : ''}`}
@@ -121,7 +117,7 @@ export function UserForm({
                             id="password"
                             type="password"
                             name="password"
-                            value={form.password}
+                            value={data.password}
                             onChange={handleChange}
                             placeholder="Enter password"
                             className={`${errors.password ? 'border-destructive' : ''}`}
@@ -140,10 +136,8 @@ export function UserForm({
                             Role
                         </FieldLabel>
                         <Select
-                            value={form.role}
-                            onValueChange={(value) =>
-                                setForm({ ...form, role: value })
-                            }
+                            value={data.role}
+                            onValueChange={(value) => setData('role', value)}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a role" />
@@ -168,13 +162,13 @@ export function UserForm({
                 <Button
                     type="button"
                     variant="outline"
-                    disabled={isSubmitting}
+                    disabled={processing}
                     onClick={() => router.get('/users')}
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting
+                <Button type="submit" disabled={processing}>
+                    {processing
                         ? 'Saving...'
                         : method === 'post'
                           ? 'Create'
