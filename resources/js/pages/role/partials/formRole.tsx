@@ -7,7 +7,7 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { router, usePage } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface RoleFormProps {
@@ -27,27 +27,23 @@ export function RoleForm({
     method = 'post',
     permissions,
 }: RoleFormProps) {
-    const { errors } = usePage().props;
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const [form, setForm] = useState({
+    const { data, setData, post, put, processing, errors } = useForm({
         name: initialData?.name || '',
         permissions: initialData?.permissions || ([] as string[]),
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        setData(e.target.name as keyof typeof data, e.target.value);
     };
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        router[method](submitUrl, form, {
-            onFinish: () => setIsSubmitting(false),
-            onError: () => setIsSubmitting(false),
-        });
+        if (method === 'post') {
+            post(submitUrl);
+        } else {
+            put(submitUrl);
+        }
     };
 
     return (
@@ -68,7 +64,7 @@ export function RoleForm({
                             id="name"
                             type="text"
                             name="name"
-                            value={form.name}
+                            value={data.name}
                             onChange={handleChange}
                             placeholder="Enter role name"
                             className={`${errors.name ? 'border-destructive' : ''}`}
@@ -89,9 +85,9 @@ export function RoleForm({
                         <MultiSelect
                             options={permissions}
                             onValueChange={(value) =>
-                                setForm({ ...form, permissions: value })
+                                setData('permissions', value)
                             }
-                            defaultValue={form.permissions}
+                            defaultValue={data.permissions}
                             placeholder="Select permissions"
                             maxCount={6}
                         />
@@ -107,13 +103,13 @@ export function RoleForm({
                 <Button
                     type="button"
                     variant="outline"
-                    disabled={isSubmitting}
+                    disabled={processing}
                     onClick={() => router.get('/roles')}
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting
+                <Button type="submit" disabled={processing}>
+                    {processing
                         ? 'Saving...'
                         : method === 'post'
                           ? 'Create'
