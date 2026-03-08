@@ -97,7 +97,19 @@ class AgendaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $agenda = Agenda::with(['agendaRoomBookings.room', 'user'])->findOrFail($id);
+
+            $agenda = [
+                ...$agenda->toArray(),
+                'file' => $agenda->file ? asset('storage/' . $agenda->file) : null
+            ];
+
+            return Inertia::render('agenda/show', compact('agenda'));
+        } catch (\Exception $e) {
+            Log::error('Error loading detail page: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load detail page.');
+        }
     }
 
     /**

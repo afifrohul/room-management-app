@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Agenda } from '@/types/data/agenda';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import {
@@ -14,6 +14,7 @@ import {
     CircleArrowUp,
     CircleCheck,
     CircleX,
+    Eye,
     SquarePlus,
 } from 'lucide-react';
 
@@ -96,6 +97,15 @@ export default function Index({ agendas }: IndexProps) {
             header: 'Actions',
             cell: ({ row }) => (
                 <div className="flex justify-start gap-2">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                            router.get(`/agenda-rooms/${row.original.id}/show`)
+                        }
+                    >
+                        <Eye />
+                    </Button>
                     <EditButton url={`/agenda-rooms/${row.original.id}/edit`} />
                     <DeleteButton
                         url={`/agenda-rooms/${row.original.id}`}
@@ -108,7 +118,7 @@ export default function Index({ agendas }: IndexProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Agenda Room" />
+            <Head title="Agenda Room Request" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="rounded-xl border p-4">
                     <div className="mx-auto flex w-full flex-col gap-4">

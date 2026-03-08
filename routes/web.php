@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/agenda-rooms', [AgendaController::class, 'index'])->name('agenda-rooms.index');
     Route::get('/agenda-rooms/create', [AgendaController::class, 'create'])->name('agenda-rooms.create');
+    Route::get('/agenda-rooms/{id}/show', [AgendaController::class, 'show'])->name('agenda-rooms.show');
     Route::post('/agenda-rooms', [AgendaController::class, 'store'])->name('agenda-rooms.store');
     Route::get('/agenda-rooms/{id}/edit', [AgendaController::class, 'edit'])->name('agenda-rooms.edit');
     Route::put('/agenda-rooms/{id}', [AgendaController::class, 'update'])->name('agenda-rooms.update');
