@@ -142,7 +142,7 @@ export default function Show({ agenda }: ShowProps) {
                         </div>
                         <div>
                             <p className="text-sm font-semibold">
-                                Requeste At:
+                                Requested At:
                             </p>
                             <p className="text-sm">
                                 {format(
