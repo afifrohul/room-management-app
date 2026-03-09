@@ -20,7 +20,13 @@ class AgendaController extends Controller
     public function index()
     {
         try {
-            $agendas = Agenda::with(['user', 'agendaRoomBookings.room'])->latest()->get();
+            $agendas = Agenda::with(['user', 'agendaRoomBookings.room']);
+
+            if (!auth()->user()->can('room-request.confirm')) {
+                $agendas->where('user_id', auth()->id());
+            }
+
+            $agendas = $agendas->latest()->get();
             
             return Inertia::render('agenda/index', compact('agendas'));
         } catch (\Exception $e) {
@@ -100,6 +106,8 @@ class AgendaController extends Controller
         try {
             $agenda = Agenda::with(['agendaRoomBookings.room', 'user'])->findOrFail($id);
 
+            $this->authorize('view', $agenda);
+
             $agenda = [
                 ...$agenda->toArray(),
                 'file' => $agenda->file ? asset('storage/' . $agenda->file) : null
@@ -120,6 +128,8 @@ class AgendaController extends Controller
         try {
             $rooms = Room::get();
             $agenda = Agenda::with('agendaRoomBookings')->findOrFail($id);
+
+            $this->authorize('update', $agenda);
 
             $agenda = [
                 ...$agenda->toArray(),
@@ -148,6 +158,9 @@ class AgendaController extends Controller
 
             DB::transaction(function () use ($request, $id) {
                 $agenda = Agenda::findOrFail($id);
+
+                $this->authorize('update', $agenda);
+
                 $agenda->title = $request->title;
                 $agenda->desc = $request->desc;
                 $agenda->save();
@@ -222,6 +235,8 @@ class AgendaController extends Controller
         try {
 
             $agenda = Agenda::findOrFail($id);
+
+            $this->authorize('delete', $agenda);
 
             $agenda_room_bookings = AgendaRoomBooking::where('agenda_id', $id)->pluck('id')->toArray();
 

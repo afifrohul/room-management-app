@@ -63,7 +63,11 @@ class RolesAndPermissionsSeeder extends Seeder
                     'user.update',
                     'user.delete',
                     'room.view',
-                    'room-request.view'
+                    'room.create',
+                    'room.update',
+                    'room.delete',
+                    'room-request.view',
+                    'room-request.confirm'
                 ]);
 
         Role::create(['name' => 'TU'])

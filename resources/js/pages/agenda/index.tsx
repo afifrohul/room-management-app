@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Agenda } from '@/types/data/agenda';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import {
@@ -30,6 +30,9 @@ interface IndexProps {
 }
 
 export default function Index({ agendas }: IndexProps) {
+    const { props } = usePage<{ auth: { user: any } }>();
+    const user = props.auth.user;
+
     const columns: ColumnDef<Agenda>[] = [
         {
             accessorKey: 'user.name',
@@ -106,11 +109,17 @@ export default function Index({ agendas }: IndexProps) {
                     >
                         <Eye />
                     </Button>
-                    <EditButton url={`/agenda-rooms/${row.original.id}/edit`} />
-                    <DeleteButton
-                        url={`/agenda-rooms/${row.original.id}`}
-                        confirmMessage="Are you sure to delete this request?"
-                    />
+                    {row.original.user_id === user.id && (
+                        <div className="flex items-center gap-2">
+                            <EditButton
+                                url={`/agenda-rooms/${row.original.id}/edit`}
+                            />
+                            <DeleteButton
+                                url={`/agenda-rooms/${row.original.id}`}
+                                confirmMessage="Are you sure to delete this request?"
+                            />
+                        </div>
+                    )}
                 </div>
             ),
         },

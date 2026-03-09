@@ -8,6 +8,7 @@ export type Agenda = {
     file: string;
     revision_note: string;
     status: string;
+    user_id: number;
     user: User;
     agenda_room_bookings: {
         room_id: number;
