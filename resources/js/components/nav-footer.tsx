@@ -8,6 +8,8 @@ import {
 } from '@/components/ui/sidebar';
 import { toUrl } from '@/lib/utils';
 import type { NavItem } from '@/types';
+import { usePage } from '@inertiajs/react';
+import { useCan } from '@/lib/can';
 
 export function NavFooter({
     items,
@@ -16,6 +18,12 @@ export function NavFooter({
 }: ComponentPropsWithoutRef<typeof SidebarGroup> & {
     items: NavItem[];
 }) {
+    const page = usePage();
+    const { can } = useCan();
+
+    const filteredItems = items.filter((item) => can(item.permission));
+    if (filteredItems.length === 0) return null;
+
     return (
         <SidebarGroup
             {...props}
@@ -23,7 +31,7 @@ export function NavFooter({
         >
             <SidebarGroupContent>
                 <SidebarMenu>
-                    {items.map((item) => (
+                    {filteredItems.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild

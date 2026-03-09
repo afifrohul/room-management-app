@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/sidebar';
 import type { NavItem } from '@/types';
 import { resolveUrl } from '@/lib/utils';
+import { useCan } from '@/lib/can';
 
 export function NavMain({
     header,
@@ -17,12 +18,16 @@ export function NavMain({
     items: NavItem[];
 }) {
     const page = usePage();
+    const { can } = useCan();
+
+    const filteredItems = items.filter((item) => can(item.permission));
+    if (filteredItems.length === 0) return null;
 
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>{header}</SidebarGroupLabel>
             <SidebarMenu>
-                {items.map((item) => (
+                {filteredItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild

@@ -8,8 +8,15 @@ import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Room } from '@/types/data/room';
-import { CircleAlert, CircleCheck, CircleX, SquarePlus } from 'lucide-react';
+import {
+    CalendarDays,
+    CircleAlert,
+    CircleCheck,
+    CircleX,
+    SquarePlus,
+} from 'lucide-react';
 import SubtleBadge from '@/components/subtle-badge';
+import { useCan } from '@/lib/can';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,6 +30,7 @@ interface IndexProps {
 }
 
 export default function Index({ rooms }: IndexProps) {
+    const { can } = useCan();
     const columns: ColumnDef<Room>[] = [
         {
             accessorKey: 'name',
@@ -72,11 +80,18 @@ export default function Index({ rooms }: IndexProps) {
             header: 'Actions',
             cell: ({ row }) => (
                 <div className="flex justify-start gap-2">
-                    <EditButton url={`/rooms/${row.original.id}/edit`} />
-                    <DeleteButton
-                        url={`/rooms/${row.original.id}`}
-                        confirmMessage="Are you sure to delete this room?"
-                    />
+                    <Button variant={'outline'} size={'sm'}>
+                        <CalendarDays />
+                    </Button>
+                    {can('room.update') && (
+                        <EditButton url={`/rooms/${row.original.id}/edit`} />
+                    )}
+                    {can('room.delete') && (
+                        <DeleteButton
+                            url={`/rooms/${row.original.id}`}
+                            confirmMessage="Are you sure to delete this room?"
+                        />
+                    )}
                 </div>
             ),
         },

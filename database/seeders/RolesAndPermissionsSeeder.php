@@ -16,6 +16,8 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
+        Permission::create(['name' => 'log.view']);
+
         Permission::create(['name' => 'permission.view']);
         Permission::create(['name' => 'permission.create']);
         Permission::create(['name' => 'permission.update']);
@@ -40,14 +42,14 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'room-request.create']);
         Permission::create(['name' => 'room-request.update']);
         Permission::create(['name' => 'room-request.delete']);
-        Permission::create(['name' => 'room-request.approve']);
-        Permission::create(['name' => 'room-request.reject']);
+        Permission::create(['name' => 'room-request.confirm']);
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         Role::create(['name' => 'Superadmin']);
         Role::create(['name' => 'Admin'])
             ->givePermissionTo([
+                    'log.view',
                     'permission.view',
                     'permission.create',
                     'permission.update',
@@ -59,7 +61,9 @@ class RolesAndPermissionsSeeder extends Seeder
                     'user.view',
                     'user.create',
                     'user.update',
-                    'user.delete'
+                    'user.delete',
+                    'room.view',
+                    'room-request.view'
                 ]);
 
         Role::create(['name' => 'TU'])
@@ -72,8 +76,7 @@ class RolesAndPermissionsSeeder extends Seeder
                     'room-request.create', 
                     'room-request.update',
                     'room-request.delete',
-                    'room-request.approve',
-                    'room-request.reject'
+                    'room-request.confirm',
                 ]);
                 
         Role::create(['name' => 'UKM/ORMAWA'])
@@ -83,8 +86,6 @@ class RolesAndPermissionsSeeder extends Seeder
                     'room-request.create', 
                     'room-request.update',
                     'room-request.delete',
-                    'room-request.approve',
-                    'room-request.reject'
                 ]);
     }
 }

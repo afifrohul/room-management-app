@@ -4,11 +4,9 @@ import {
     Logs,
     Users,
     Key,
-    LockKeyhole,
     UserCog,
     DoorOpen,
     CalendarRange,
-    History,
 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -39,21 +37,25 @@ const masterDataItems: NavItem[] = [
         title: 'Permission',
         href: '/permissions',
         icon: Key,
+        permission: 'permission.view',
     },
     {
         title: 'Role',
         href: '/roles',
         icon: UserCog,
+        permission: 'role.view',
     },
     {
         title: 'User',
         href: '/users',
         icon: Users,
+        permission: 'user.view',
     },
     {
         title: 'Room',
         href: '/rooms',
         icon: DoorOpen,
+        permission: 'room.view',
     },
 ];
 
@@ -62,12 +64,8 @@ const requestItems: NavItem[] = [
         title: 'Agenda & Room',
         href: '/agenda-rooms',
         icon: CalendarRange,
+        permission: 'room-request.view',
     },
-    // {
-    //     title: 'History',
-    //     href: '/histories',
-    //     icon: History,
-    // },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -75,6 +73,7 @@ const footerNavItems: NavItem[] = [
         title: 'Logs Viewer',
         href: '/log-viewer',
         icon: Logs,
+        permission: 'log.view',
     },
 ];
 
