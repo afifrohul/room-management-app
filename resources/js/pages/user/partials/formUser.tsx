@@ -8,7 +8,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Role } from '@/types/data/role';
 import { router, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 import {
     Select,
     SelectContent,

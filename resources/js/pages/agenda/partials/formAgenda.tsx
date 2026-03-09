@@ -10,7 +10,6 @@ import { Progress } from '@/components/ui/progress';
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
     SelectTrigger,
     SelectValue,

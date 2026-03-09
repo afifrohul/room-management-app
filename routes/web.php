@@ -91,6 +91,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/agenda-rooms/{id}/edit', [AgendaController::class, 'edit'])->name('agenda-rooms.edit');
         Route::put('/agenda-rooms/{id}', [AgendaController::class, 'update'])->name('agenda-rooms.update');
     });
+    Route::group(['middleware' => ['permission:room-request.confirm']], function () {
+        Route::put('/agenda-rooms/{id}/update-status', [AgendaController::class, 'updateStatus'])->name('agenda-rooms.update-status');
+    });
     Route::group(['middleware' => ['permission:room-request.delete']], function () {
         Route::delete('/agenda-rooms/{id}', [AgendaController::class, 'destroy'])->name('agenda-rooms.destroy');
     });

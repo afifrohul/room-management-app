@@ -1,24 +1,37 @@
 import DataTable from '@/components/data-table';
 import SubtleBadge from '@/components/subtle-badge';
 import { Button } from '@/components/ui/button';
+import {
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
+} from '@/components/ui/field';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Agenda } from '@/types/data/agenda';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import {
-    Building,
-    Calendar,
     CalendarDays,
     CircleAlert,
     CircleArrowUp,
     CircleCheck,
     CircleX,
-    DoorClosed,
     DoorOpen,
 } from 'lucide-react';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { useCan } from '@/lib/can';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -41,6 +54,7 @@ interface ShowProps {
 }
 
 export default function Show({ agenda }: ShowProps) {
+    const { can } = useCan();
     const columns: ColumnDef<RoomRequest>[] = [
         {
             accessorKey: 'room.name',
@@ -84,12 +98,28 @@ export default function Show({ agenda }: ShowProps) {
         },
     ];
 
+    const { data, setData, put, processing, errors } = useForm({
+        status: agenda.status,
+        revision_note: agenda.revision_note || '',
+    });
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        setData(e.target.name as keyof typeof data, e.target.value);
+    };
+
+    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        put(`/agenda-rooms/${agenda.id}/update-status`);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Show Agenda Room Request" />
             <div className="container mx-auto p-4">
                 <div className="rounded-md border p-4">
-                    <div className='flex justify-between items-center'>
+                    <div className="flex items-center justify-between">
                         <h1 className="text-xl font-bold">
                             {agenda.user?.name} - {agenda.title}
                         </h1>
@@ -163,17 +193,98 @@ export default function Show({ agenda }: ShowProps) {
                                 />
                             </div>
                         </div>
+                        <div>
+                            <p className="text-sm font-semibold">
+                                Revision Note:
+                            </p>
+                            <p className="text-sm">
+                                {agenda.revision_note || '-'}
+                            </p>
+                        </div>
                     </div>
-                    <div className="flex justify-end">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => router.get('/agenda-rooms')}
-                            className="mt-2 w-fit"
-                        >
-                            Back
-                        </Button>
-                    </div>
+                    <Separator className="my-6" />
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            {can('room-request.confirm') && (
+                                <FieldGroup>
+                                    <Field>
+                                        <FieldLabel
+                                            htmlFor="status"
+                                            className={`${errors.status ? 'text-destructive' : ''}`}
+                                        >
+                                            Status
+                                        </FieldLabel>
+                                        <Select
+                                            value={data.status}
+                                            onValueChange={(value) =>
+                                                setData('status', value)
+                                            }
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="requested">
+                                                        Requested
+                                                    </SelectItem>
+                                                    <SelectItem value="revision">
+                                                        Revision
+                                                    </SelectItem>
+                                                    <SelectItem value="rejected">
+                                                        Rejected
+                                                    </SelectItem>
+                                                    <SelectItem value="approved">
+                                                        Approved
+                                                    </SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </Field>
+                                    {data.status === 'revision' && (
+                                        <Field>
+                                            <FieldLabel
+                                                htmlFor="revision_note"
+                                                className={`${errors.revision_note ? 'text-destructive' : ''}`}
+                                            >
+                                                Revison Note
+                                            </FieldLabel>
+                                            <Textarea
+                                                id="revision_note"
+                                                name="revision_note"
+                                                placeholder="Enter revision note"
+                                                rows={4}
+                                                value={data.revision_note}
+                                                onChange={handleChange}
+                                                className={`${errors.revision_note ? 'border-destructive' : ''}`}
+                                            />
+                                            {errors.revision_note && (
+                                                <FieldDescription className="text-xs text-destructive">
+                                                    {errors.revision_note}
+                                                </FieldDescription>
+                                            )}
+                                        </Field>
+                                    )}
+                                </FieldGroup>
+                            )}
+
+                            <div className="mt-4 flex justify-end gap-2">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    disabled={processing}
+                                    onClick={() => router.get('/agenda-rooms')}
+                                >
+                                    Back
+                                </Button>
+                                {can('room-request.confirm') && (
+                                    <Button type="submit" disabled={processing}>
+                                        {processing ? 'Saving...' : 'Update'}
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </AppLayout>

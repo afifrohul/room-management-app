@@ -188,6 +188,32 @@ class AgendaController extends Controller
         }
     }
 
+    public function updateStatus(Request $request, string $id)
+    {
+        $request->validate([
+            'status' => 'required',
+            'revision_note' => 'nullable'
+        ]);
+
+        try {
+
+            DB::transaction(function () use ($request, $id) {
+                $agenda = Agenda::findOrFail($id);
+                $agenda->status = $request->status;
+                if ($request->status === 'revision') {
+                    $agenda->revision_note = $request->revision_note;
+                }
+                $agenda->save();
+            });
+
+            return redirect()->route('agenda-rooms.index')->with('success', 'Agenda room request updated successfully.');
+
+        } catch (\Exception $e) {
+             Log::error('Error updating agenda room request: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update agenda room request.');
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */
