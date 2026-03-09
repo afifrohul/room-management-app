@@ -62,7 +62,7 @@ class AgendaController extends Controller
                 $agenda->user_id = auth()->id();
                 $agenda->title = $request->title;
                 $agenda->desc = $request->desc;
-                $agenda->desc = 'requested';
+                $agenda->status = 'requested';
                 $agenda->save();
 
                 if ($request->hasFile('file')) {
