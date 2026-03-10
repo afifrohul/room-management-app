@@ -41,7 +41,7 @@ class AgendaController extends Controller
     public function create()
     {
         try {
-            $rooms = Room::get();
+            $rooms = Room::where('status', 'available')->get();
             return Inertia::render('agenda/create', compact('rooms'));
         } catch (\Exception $e) {
             Log::error('Error loading create form: ' . $e->getMessage());
@@ -126,7 +126,7 @@ class AgendaController extends Controller
     public function edit(string $id)
     {
         try {
-            $rooms = Room::get();
+            $rooms = Room::where('status', 'available')->get();
             $agenda = Agenda::with('agendaRoomBookings')->findOrFail($id);
 
             $this->authorize('update', $agenda);

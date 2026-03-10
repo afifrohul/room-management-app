@@ -229,7 +229,7 @@ export function AgendaForm({
                                         }
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select room" />
+                                            <SelectValue placeholder="Select a room" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {rooms.map((room) => (
