@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
             RoomSeeder::class,
+            AgendaSeeder::class,
         ]);
 
         // \App\Models\User::factory(10)->create()->each(function ($user) {

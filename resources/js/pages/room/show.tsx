@@ -69,7 +69,7 @@ export default function Show({ room, schedule }: ShowProps) {
                             <div className="rounded-lg border p-4 text-xs">
                                 <FullCalendar
                                     plugins={[dayGridPlugin, timeGridPlugin]}
-                                    initialView="timeGridWeek"
+                                    initialView="dayGridMonth"
                                     headerToolbar={{
                                         left: 'prev,next',
                                         center: 'title',
