@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::group(['middleware' => ['permission:room.view']], function () {
         Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+        Route::get('/rooms/{id}/show', [RoomController::class, 'show'])->name('rooms.show');
     });
     Route::group(['middleware' => ['permission:room.create']], function () {
         Route::get('/rooms/create', [RoomController::class, 'create'])->name('rooms.create');

@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Room;
+use App\Models\AgendaRoomBooking;
 
 class RoomController extends Controller
 {
@@ -67,7 +68,26 @@ class RoomController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $room = Room::findOrFail($id);
+            $schedule = AgendaRoomBooking::with('agenda')->whereHas('agenda', function ($query) {
+                $query->where('status', 'approved');
+            })->where('room_id', $id)->get();
+
+            $schedule = $schedule->map((function($item) {
+                return [
+                    'id' => $item->id,
+                    'title' => $item->agenda->title,
+                    'start' => $item->start_datetime,
+                    'end' => $item->end_datetime,
+                ];
+            }));
+
+            return Inertia::render('room/show', compact('room', 'schedule'));
+        } catch (\Exception $e) {
+            Log::error('Error loading detail page: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load detail page.');
+        }
     }
 
     /**

@@ -80,7 +80,13 @@ export default function Index({ rooms }: IndexProps) {
             header: 'Actions',
             cell: ({ row }) => (
                 <div className="flex justify-start gap-2">
-                    <Button variant={'outline'} size={'sm'}>
+                    <Button
+                        variant={'outline'}
+                        size={'sm'}
+                        onClick={() =>
+                            router.get(`/rooms/${row.original.id}/show`)
+                        }
+                    >
                         <CalendarDays />
                     </Button>
                     {can('room.update') && (
