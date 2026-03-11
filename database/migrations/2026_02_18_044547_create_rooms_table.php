@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('desc');
+            $table->text('color')->nullable();
             $table->enum('status', ['available', 'unavailable'])->default('available');
             $table->timestamps();
             $table->softDeletes();

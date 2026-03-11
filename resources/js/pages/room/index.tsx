@@ -33,6 +33,18 @@ export default function Index({ rooms }: IndexProps) {
     const { can } = useCan();
     const columns: ColumnDef<Room>[] = [
         {
+            accessorKey: 'color',
+            header: 'Color',
+            cell: ({ row }) => {
+                return (
+                    <div
+                        className={`h-4 w-6 rounded`}
+                        style={{ backgroundColor: row.original.color }}
+                    ></div>
+                );
+            },
+        },
+        {
             accessorKey: 'name',
             header: 'Room Name',
             cell: (info) => info.getValue(),

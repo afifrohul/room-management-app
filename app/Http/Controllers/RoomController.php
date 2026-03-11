@@ -16,7 +16,7 @@ class RoomController extends Controller
     public function index()
     {
         try {
-            $rooms = Room::select('id', 'name', 'desc', 'status', 'created_at', 'updated_at')->get();
+            $rooms = Room::select('id', 'name', 'desc', 'color', 'status', 'created_at', 'updated_at')->get();
             return Inertia::render('room/index', compact('rooms'));
         } catch (\Exception $e) {
             Log::error('Error loading rooms: ' . $e->getMessage());
@@ -45,7 +45,8 @@ class RoomController extends Controller
         $request->validate([
             'name' => 'required',
             'desc' => 'required',
-            'status' => 'required'
+            'color' => 'nullable',
+            'status' => 'required',
         ]);
 
         try {
@@ -53,6 +54,7 @@ class RoomController extends Controller
             $room = new Room();
             $room->name = $request->name;
             $room->desc = $request->desc;
+            $room->color = $request->color ?? '#000000';
             $room->status = $request->status;
             $room->save();
 
@@ -112,6 +114,7 @@ class RoomController extends Controller
         $request->validate([
             'name' => 'required',
             'desc' => 'required',
+            'color' => 'nullable',
             'status' => 'required'
         ]);
 
@@ -120,6 +123,7 @@ class RoomController extends Controller
             $room = Room::findOrFail($id);
             $room->name = $request->name;
             $room->desc = $request->desc;
+            $room->color = $request->color ?? '#000000';
             $room->status = $request->status;
             $room->save();
 

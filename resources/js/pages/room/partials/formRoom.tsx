@@ -22,6 +22,7 @@ interface RoomFormProps {
         id: number;
         name: string;
         desc: string;
+        color: string;
         status: 'available' | 'unavailable';
     };
     submitUrl: string;
@@ -36,6 +37,7 @@ export function RoomForm({
     const { data, setData, post, put, processing, errors } = useForm({
         name: initialData?.name || '',
         desc: initialData?.desc || '',
+        color: initialData?.color || '',
         status: initialData?.status || '',
     });
 
@@ -100,6 +102,43 @@ export function RoomForm({
                         {errors.desc && (
                             <FieldDescription className="text-xs text-destructive">
                                 {errors.desc}
+                            </FieldDescription>
+                        )}
+                    </Field>
+                    <Field>
+                        <FieldLabel htmlFor="color">Color</FieldLabel>
+
+                        <div className="flex items-center gap-3">
+                            {/* Color Picker */}
+                            <input
+                                type="color"
+                                name="color"
+                                value={data.color || '#000000'}
+                                onChange={handleChange}
+                                className="h-10 w-10 cursor-pointer"
+                            />
+
+                            <Input
+                                id="color"
+                                placeholder="#059669"
+                                value={data.color || '#000000'}
+                                className="flex-1"
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div>
+                            <a
+                                href="https://tailscan.com/colors"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-indigo-500 underline"
+                            >
+                                Click this to get tailwind color reference
+                            </a>
+                        </div>
+                        {errors.color && (
+                            <FieldDescription className="text-xs text-destructive">
+                                {errors.color}
                             </FieldDescription>
                         )}
                     </Field>
