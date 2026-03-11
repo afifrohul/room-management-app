@@ -7,6 +7,7 @@ import {
     UserCog,
     DoorOpen,
     CalendarRange,
+    CalendarDays,
 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -56,6 +57,11 @@ const masterDataItems: NavItem[] = [
         href: '/rooms',
         icon: DoorOpen,
         permission: 'room.view',
+    },
+    {
+        title: 'Calendar',
+        href: '/calendar',
+        icon: CalendarDays,
     },
 ];
 

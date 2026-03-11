@@ -22,7 +22,7 @@ class RoomSeeder extends Seeder
             [
                 'name' => 'Classroom 3.1',
                 'desc' => 'Classroom 3.1 is a classroom located on the 3rd floor of the main building. This room is designed for learning and group discussions. Equipped with comfortable desks and chairs, a blackboard, and technological facilities such as a projector and internet connection, Classroom 3.1 provides a conducive environment for the learning process. With sufficient capacity to accommodate a number of students, Classroom 3.1 is an ideal place for various academic activities, including lectures, seminars, and workshops.',
-                'color' => '#ea580c',
+                'color' => '#2563eb',
                 'status' => 'available'
             ],
             [
@@ -52,7 +52,7 @@ class RoomSeeder extends Seeder
             [
                 'name' => 'Aula 2nd Floor',
                 'desc' => 'Aula 2nd Floor is a multi-purpose room located on the 2nd floor of the main building. This room is designed for various events and activities, ranging from meetings and seminars to social events. Equipped with adequate facilities such as a sound system, projector, and spacious area, Aula 2nd Floor provides a comfortable and flexible space for various organizational and academic activities.',
-                'color' => '#059669',
+                'color' => '#e879f9',
                 'status' => 'available'
             ]
         ];

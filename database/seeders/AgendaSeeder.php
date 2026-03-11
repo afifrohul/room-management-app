@@ -35,7 +35,7 @@ class AgendaSeeder extends Seeder
                 );
 
                 $start = $date->copy()->setHour(rand(8, 15))->setMinute(0);
-                $end = $start->copy()->addHours(rand(1, 3));
+                $end = $start->copy()->addHours(rand(5, 7));
 
                 \DB::table('agenda_room_bookings')->insert([
                     'agenda_id' => $agendaId,

@@ -31,8 +31,6 @@ interface ShowProps {
 }
 
 export default function Show({ room, schedule }: ShowProps) {
-    console.log(schedule);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Show Agenda Room Request" />
