@@ -72,14 +72,14 @@ class RoomController extends Controller
     {
         try {
             $room = Room::findOrFail($id);
-            $schedule = AgendaRoomBooking::with(['agenda', 'room'])->whereHas('agenda', function ($query) {
+            $schedule = AgendaRoomBooking::with(['agenda.user', 'room'])->whereHas('agenda', function ($query) {
                 $query->where('status', 'approved');
             })->where('room_id', $id)->get();
 
             $schedule = $schedule->map((function($item) {
                 return [
                     'id' => $item->id,
-                    'title' => $item->agenda->title,
+                    'title' => $item->agenda->user->name . '-' . $item->agenda->title,
                     'start' => $item->start_datetime,
                     'end' => $item->end_datetime,
                     'color' => $item->room->color,
