@@ -18,13 +18,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type Schedule = {
-    id: number;
-    title: string;
-    start_datetime: string;
-    end_datetime: string;
-};
-
 interface ShowProps {
     room: Room;
     schedule: [];

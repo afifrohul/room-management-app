@@ -72,7 +72,7 @@ class RoomController extends Controller
     {
         try {
             $room = Room::findOrFail($id);
-            $schedule = AgendaRoomBooking::with('agenda')->whereHas('agenda', function ($query) {
+            $schedule = AgendaRoomBooking::with(['agenda', 'room'])->whereHas('agenda', function ($query) {
                 $query->where('status', 'approved');
             })->where('room_id', $id)->get();
 
@@ -82,6 +82,7 @@ class RoomController extends Controller
                     'title' => $item->agenda->title,
                     'start' => $item->start_datetime,
                     'end' => $item->end_datetime,
+                    'color' => $item->room->color,
                 ];
             }));
 
