@@ -37,10 +37,13 @@ export default function Index({ rooms }: IndexProps) {
             header: 'Color',
             cell: ({ row }) => {
                 return (
-                    <div
-                        className={`h-4 w-6 rounded`}
-                        style={{ backgroundColor: row.original.color }}
-                    ></div>
+                    <div className="flex items-center gap-1">
+                        <div
+                            className={`h-2.5 w-2.5 rounded-full`}
+                            style={{ backgroundColor: row.original.color }}
+                        />
+                        <p className='italic'>{row.original.color}</p>
+                    </div>
                 );
             },
         },
