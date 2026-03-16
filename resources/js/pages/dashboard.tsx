@@ -3,13 +3,18 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { Auth, BreadcrumbItem } from '@/types';
 import { useEffect, useState } from 'react';
-import { CalendarDays, Clock } from 'lucide-react';
+import {
+    CalendarDays,
+    CalendarRange,
+    Clock,
+    DoorOpen,
+    Key,
+    UserCog,
+    Users,
+} from 'lucide-react';
 import { MdOutlineWavingHand } from 'react-icons/md';
-import DataTable from '@/components/data-table';
-import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
-import EditButton from '@/components/edit-button';
-import DeleteButton from '@/components/delete-button';
+import DashboardCardInfo from '@/components/dashboard-card-info';
+import { useCan } from '@/lib/can';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,17 +23,23 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type User = {
-    id: number;
-    name: string;
-    email: string;
-};
-
 interface DashboardProps {
-    users: User[];
+    permissionCount: number;
+    roleCount: number;
+    userCount: number;
+    roomCount: number;
+    agendaRequestCount: number;
 }
 
-export default function Dashboard({ users }: DashboardProps) {
+export default function Dashboard({
+    permissionCount,
+    roleCount,
+    userCount,
+    roomCount,
+    agendaRequestCount,
+}: DashboardProps) {
+    const { can } = useCan();
+
     const { auth } = usePage().props as unknown as { auth: Auth };
 
     const [now, setNow] = useState(new Date());
@@ -53,33 +64,6 @@ export default function Dashboard({ users }: DashboardProps) {
         minute: '2-digit',
         second: '2-digit',
     });
-
-    const columns: ColumnDef<User>[] = [
-        {
-            accessorKey: 'name',
-            header: 'Name',
-            cell: (info) => info.getValue(),
-        },
-        {
-            accessorKey: 'email',
-            header: 'Email',
-            cell: (info) => info.getValue(),
-        },
-        {
-            id: 'actions',
-            header: 'Actions',
-            cell: ({ row }) => (
-                <div className="flex justify-start gap-2">
-                    <p className="rounded border bg-accent px-1 py-0.5">
-                        Edit Button Here
-                    </p>
-                    <p className="rounded border bg-accent px-1 py-0.5">
-                        Delete Button Here
-                    </p>
-                </div>
-            ),
-        },
-    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -113,6 +97,53 @@ export default function Dashboard({ users }: DashboardProps) {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                    {can('permission.view') && (
+                        <DashboardCardInfo
+                            color="teal"
+                            data={permissionCount}
+                            desc="Total Permission(s)"
+                            icon={<Key className="h-3.5 w-3.5 text-teal-500" />}
+                        />
+                    )}
+                    {can('role.view') && (
+                        <DashboardCardInfo
+                            color="blue"
+                            data={roleCount}
+                            desc="Total Role(s)"
+                            icon={
+                                <UserCog className="h-3.5 w-3.5 text-blue-500" />
+                            }
+                        />
+                    )}
+                    {can('user.view') && (
+                        <DashboardCardInfo
+                            color="purple"
+                            data={userCount}
+                            desc="Total Users(s)"
+                            icon={
+                                <Users className="h-3.5 w-3.5 text-purple-500" />
+                            }
+                        />
+                    )}
+                    {can('room.view')}
+                    <DashboardCardInfo
+                        color="amber"
+                        data={roomCount}
+                        desc="Total Room(s)"
+                        icon={
+                            <DoorOpen className="h-3.5 w-3.5 text-amber-500" />
+                        }
+                    />
+                    <DashboardCardInfo
+                        color="fuchsia"
+                        data={agendaRequestCount}
+                        desc="Total Agenda Request(s)"
+                        icon={
+                            <CalendarRange className="h-3.5 w-3.5 text-fuchsia-500" />
+                        }
+                    />
                 </div>
             </div>
         </AppLayout>
