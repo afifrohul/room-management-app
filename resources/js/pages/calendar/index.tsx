@@ -1,10 +1,6 @@
-import SubtleBadge from '@/components/subtle-badge';
-import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { format } from 'date-fns';
-import { CircleArrowUp, CircleCheck } from 'lucide-react';
 import { Room } from '@/types/data/room';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
@@ -55,6 +51,23 @@ export default function Index({ rooms, schedule }: IndexProps) {
             <Head title="Calendar" />
             <div className="container mx-auto p-4">
                 <div className="rounded-md border p-4">
+                    <div className='flex flex-col gap-1 pb-4'>
+                        <p className='text-sm font-semibold'>Room Color Code: </p>
+                        <div className="flex gap-4">
+                            {rooms.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex items-center gap-1"
+                                >
+                                    <div
+                                        className="h-3 w-3 rounded"
+                                        style={{ backgroundColor: item.color }}
+                                    />
+                                    <p className="text-xs">{item.name}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                     <div className="space-y-4 rounded-lg border p-4 text-xs">
                         <RoomFilter
                             rooms={rooms}

@@ -44,7 +44,7 @@ export function RoomFilter({ rooms, selected, onChange }: RoomFilterProps) {
 
             <PopoverContent className="w-fit p-0">
                 <Command>
-                    <CommandInput placeholder="Search habit..." />
+                    <CommandInput placeholder="Search room..." />
                     <CommandEmpty>No rooms found.</CommandEmpty>
 
                     <CommandGroup>
