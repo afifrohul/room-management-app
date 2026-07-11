@@ -18,8 +18,10 @@ class DashboardController extends Controller
         $roleCount = Role::count();
         $userCount = User::count();
         $roomCount = Room::count();
+        $roomAvailableCount = Room::where('status', 'available')->count();
+        $roomUnavailableCount = Room::where('status', 'unavailable')->count();
         $agendaRequestCount = Agenda::count();
 
-        return Inertia::render('dashboard', compact('permissionCount', 'roleCount', 'userCount', 'roomCount', 'agendaRequestCount'));
+        return Inertia::render('dashboard', compact('permissionCount', 'roleCount', 'userCount', 'roomCount', 'roomAvailableCount', 'roomUnavailableCount', 'agendaRequestCount'));
     }
 }

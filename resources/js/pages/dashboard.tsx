@@ -28,6 +28,8 @@ interface DashboardProps {
     roleCount: number;
     userCount: number;
     roomCount: number;
+    roomAvailableCount: number;
+    roomUnavailableCount: number;
     agendaRequestCount: number;
 }
 
@@ -36,6 +38,8 @@ export default function Dashboard({
     roleCount,
     userCount,
     roomCount,
+    roomAvailableCount,
+    roomUnavailableCount,
     agendaRequestCount,
 }: DashboardProps) {
     const { can } = useCan();
@@ -128,12 +132,30 @@ export default function Dashboard({
                         />
                     )}
                     {can('room.view')}
+                </div>
+                <div className="grid grid-cols-4 gap-4">
                     <DashboardCardInfo
                         color="amber"
                         data={roomCount}
-                        desc="Total Room(s)"
+                        desc="Total All Room(s)"
                         icon={
                             <DoorOpen className="h-3.5 w-3.5 text-amber-500" />
+                        }
+                    />
+                    <DashboardCardInfo
+                        color="green"
+                        data={roomAvailableCount}
+                        desc="Total Room(s) Available"
+                        icon={
+                            <DoorOpen className="h-3.5 w-3.5 text-green-500" />
+                        }
+                    />
+                    <DashboardCardInfo
+                        color="rose"
+                        data={roomUnavailableCount}
+                        desc="Total Room(s) Unavailable"
+                        icon={
+                            <DoorOpen className="h-3.5 w-3.5 text-rose-500" />
                         }
                     />
                     <DashboardCardInfo
