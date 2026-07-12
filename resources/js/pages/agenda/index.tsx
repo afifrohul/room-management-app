@@ -41,7 +41,7 @@ export default function Index({ agendas }: IndexProps) {
         },
         {
             accessorKey: 'title',
-            header: 'Title',
+            header: 'Agenda Title',
             cell: (info) => info.getValue(),
         },
         {
